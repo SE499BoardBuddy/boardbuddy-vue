@@ -3,16 +3,11 @@ import navBarVue from '@/components/NavBar.vue'
 </script>
 
 <template>
-  <header class="w-full p-2 bg-bb-black h-[8vh] fixed top-0 right-0 left-0">
-    <img src="/src/assets/logo-text-dark.svg" class="h-full" />
-  </header>
-  <br>
-  <br>
-  <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+  <div class="h-full py-16 lg:pl-[17%] bg-bb-black">
     <div class="mx-auto max-w-lg text-center">
-      <h1 class="text-2xl font-bold sm:text-3xl">Get started today!</h1>
+      <h1 class="text-2xl font-bold sm:text-3xl text-bb-white">Get started today!</h1>
 
-      <p class="mt-4 text-gray-500">
+      <p class="mt-4 text-bb-white">
         increase BoardBuddy experience by .....
         
       </p>
@@ -91,7 +86,7 @@ import navBarVue from '@/components/NavBar.vue'
 
         <button
           type="submit"
-          class="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white"
+          class="inline-block rounded-lg bg-bb-red px-5 py-3 text-sm font-medium text-white"
         >
           Sign in
         </button>
