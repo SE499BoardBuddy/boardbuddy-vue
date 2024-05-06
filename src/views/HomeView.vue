@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import navBarVue from '@/components/NavBar.vue'
+import headerVue from '@/components/HeaderBar.vue'
 </script>
 <template>
-  <header class="w-full p-2 bg-bb-black h-[8vh] fixed top-0 right-0 left-0">
-    <img src="/src/assets/logo-text-dark.svg" class="h-full" />
-  </header>
-  <section class="w-full h-[84vh] bg-bb-orange mt-[8vh]"></section>
+  <headerVue></headerVue>
+  <div
+    class="w-full h-full bg-bb-black pt-[8vh] pb-[10vh] lg:pt-0 lg:pb-0 lg:pl-[17%] text-bb-white"
+  >
+    Home put stuff here
+  </div>
   <navBarVue></navBarVue>
 </template>

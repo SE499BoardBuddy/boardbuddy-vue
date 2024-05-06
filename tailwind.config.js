@@ -8,6 +8,7 @@ export default {
           DEFAULT: '#22092C',
           light: '#37233F'
         },
+        'bb-white': '#D3CED5',
         'bb-maroon': '#872341',
         'bb-red': '#BE3144',
         'bb-orange': '#F05941'
