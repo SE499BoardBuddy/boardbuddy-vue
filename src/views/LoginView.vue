@@ -4,10 +4,10 @@ import navBarVue from '@/components/NavBar.vue'
 
 <template>
   <div class="h-full py-16 lg:pl-[17%] bg-bb-black">
-    <div class="max-w-lg mx-auto text-center">
-      <h1 class="text-2xl font-bold sm:text-3xl text-bb-white">Get started today!</h1>
+    <div class="mx-auto max-w-lg text-center">
+      <h1 class="text-2xl font-bold sm:text-3xl text-bb-white">Welcum bak!</h1>
 
-      <p class="mt-4 text-bb-white">Increase BoardBuddy experience by .....</p>
+      <p class="mt-4 text-bb-white">increase BoardBuddy experience by .....</p>
     </div>
 
     <form action="#" class="max-w-md mx-auto mt-8 mb-0 space-y-4">
@@ -76,9 +76,9 @@ import navBarVue from '@/components/NavBar.vue'
       </div>
 
       <div class="flex items-center justify-between">
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-bb-white">
           No account?
-          <a class="underline hover:text-bb-red" href="#">Sign up</a>
+          <RouterLink :to="{ name: 'signup' }" class="underline text-bb-red" href="#">Sign up</RouterLink>
         </p>
 
         <button
