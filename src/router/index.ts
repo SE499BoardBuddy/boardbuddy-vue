@@ -1,6 +1,7 @@
 import AccountView from '@/views/AccountView.vue'
 import ChattingView from '@/views/ChattingView.vue'
 import ChatView from '@/views/ChatView.vue'
+import CollectionInsideView from '@/views/CollectionInsideView.vue'
 import CollectionView from '@/views/CollectionView.vue'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
@@ -28,6 +29,11 @@ const router = createRouter({
       path: '/collection',
       name: 'collection',
       component: CollectionView
+    },
+    {
+      path: '/inside',
+      name: 'collectionInside',
+      component: CollectionInsideView
     },
     {
       path: '/account',

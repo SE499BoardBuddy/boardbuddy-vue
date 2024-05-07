@@ -3,9 +3,9 @@ import navBarVue from '@/components/NavBar.vue'
 import headerVue from '@/components/HeaderBar.vue'
 import { ref } from 'vue'
 const chatList = ref<number[]>([])
-// for (var i = 1; i <= 30; i++) {
-//   chatList.value.push(i)
-// }
+for (var i = 1; i <= 30; i++) {
+  chatList.value.push(i)
+}
 </script>
 <template>
   <headerVue></headerVue>

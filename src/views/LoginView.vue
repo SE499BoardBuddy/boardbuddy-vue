@@ -4,30 +4,27 @@ import navBarVue from '@/components/NavBar.vue'
 
 <template>
   <div class="h-full py-16 lg:pl-[17%] bg-bb-black">
-    <div class="mx-auto max-w-lg text-center">
+    <div class="max-w-lg mx-auto text-center">
       <h1 class="text-2xl font-bold sm:text-3xl text-bb-white">Get started today!</h1>
 
-      <p class="mt-4 text-bb-white">
-        increase BoardBuddy experience by .....
-        
-      </p>
+      <p class="mt-4 text-bb-white">Increase BoardBuddy experience by .....</p>
     </div>
 
-    <form action="#" class="mx-auto mb-0 mt-8 max-w-md space-y-4">
+    <form action="#" class="max-w-md mx-auto mt-8 mb-0 space-y-4">
       <div>
         <label for="email" class="sr-only">Email</label>
 
         <div class="relative">
           <input
             type="email"
-            class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+            class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
             placeholder="Enter email"
           />
 
-          <span class="absolute inset-y-0 end-0 grid place-content-center px-4">
+          <span class="absolute inset-y-0 grid px-4 end-0 place-content-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="size-4 text-gray-400"
+              class="text-gray-400 size-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -49,14 +46,14 @@ import navBarVue from '@/components/NavBar.vue'
         <div class="relative">
           <input
             type="password"
-            class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+            class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
             placeholder="Enter password"
           />
 
-          <span class="absolute inset-y-0 end-0 grid place-content-center px-4">
+          <span class="absolute inset-y-0 grid px-4 end-0 place-content-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="size-4 text-gray-400"
+              class="text-gray-400 size-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -81,12 +78,12 @@ import navBarVue from '@/components/NavBar.vue'
       <div class="flex items-center justify-between">
         <p class="text-sm text-gray-500">
           No account?
-          <a class="underline" href="#">Sign up</a>
+          <a class="underline hover:text-bb-red" href="#">Sign up</a>
         </p>
 
         <button
           type="submit"
-          class="inline-block rounded-lg bg-bb-red px-5 py-3 text-sm font-medium text-white"
+          class="inline-block px-5 py-3 text-sm font-medium text-white rounded-lg bg-bb-red"
         >
           Sign in
         </button>
