@@ -3,6 +3,7 @@ import ChattingView from '@/views/ChattingView.vue'
 import ChatView from '@/views/ChatView.vue'
 import CollectionView from '@/views/CollectionView.vue'
 import HomeView from '@/views/HomeView.vue'
+import LoginView from '@/views/LoginView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/account',
       name: 'account',
       component: AccountView
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
     }
   ]
 })
