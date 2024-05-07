@@ -1,4 +1,5 @@
 import AccountView from '@/views/AccountView.vue'
+import ChattingView from '@/views/ChattingView.vue'
 import ChatView from '@/views/ChatView.vue'
 import CollectionView from '@/views/CollectionView.vue'
 import HomeView from '@/views/HomeView.vue'
@@ -15,7 +16,12 @@ const router = createRouter({
     {
       path: '/chat',
       name: 'chat',
-      component: ChatView
+      component: ChatView,
+    },
+    {
+      path: '/chatting',
+      name: 'chatting',
+      component: ChattingView
     },
     {
       path: '/collection',

@@ -20,7 +20,7 @@ const currentRouteName = computed(() => {
       <li>
         <RouterLink
           :to="{ name: 'home' }"
-          class="flex flex-col items-center justify-center h-full pt-2 text-center transition ease-in-out border-t-2 rounded-none lg:rounded-lg lg:active:scale-90 group lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
+          class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:rounded-lg lg:active:scale-90 group lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
           active-class="text-bb-red border-bb-red lg:border-0 lg:font-semibold "
         >
           <svg
@@ -59,7 +59,7 @@ const currentRouteName = computed(() => {
       <li>
         <RouterLink
           :to="{ name: 'chat' }"
-          class="flex flex-col items-center justify-center h-full pt-2 text-center transition ease-in-out border-t-2 rounded-none lg:rounded-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
+          class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:rounded-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
           active-class="text-bb-red border-bb-red lg:border-0 lg:font-semibold "
         >
           <svg
@@ -97,7 +97,7 @@ const currentRouteName = computed(() => {
       <li>
         <RouterLink
           :to="{ name: 'collection' }"
-          class="flex flex-col items-center justify-center h-full pt-2 text-center transition ease-in-out border-t-2 rounded-none lg:rounded-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
+          class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:rounded-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
           active-class="text-bb-red border-bb-red lg:border-0 lg:font-semibold "
         >
           <svg
@@ -133,7 +133,7 @@ const currentRouteName = computed(() => {
       <li>
         <RouterLink
           :to="{ name: 'account' }"
-          class="flex flex-col items-center justify-center h-full pt-2 text-center transition ease-in-out border-t-2 rounded-none lg:rounded-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
+          class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:rounded-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
           active-class="text-bb-red border-bb-red lg:border-0 lg:font-semibold "
         >
           <svg
