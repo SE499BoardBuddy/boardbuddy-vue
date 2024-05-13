@@ -11,7 +11,7 @@ const currentRouteName = computed(() => {
   <nav
     class="w-full pb-2 bg-bb-black h-[10vh] fixed bottom-0 right-0 left-0 lg:top-0 lg:w-[16%] lg:h-full lg:pl-2 border-t-2 border-bb-black-light lg:border-r-2 lg:border-t-0"
   >
-    <RouterLink :to="{ name: 'home' }" class="hidden w-auto my-6 mr-2 lg:flex"
+    <RouterLink :to="{ name: 'chatting' }" class="hidden w-auto my-6 mr-2 lg:flex"
       ><img src="../assets/logo-text-dark.svg" class="lg:h-[8vh]" />
     </RouterLink>
     <ul
@@ -133,7 +133,7 @@ const currentRouteName = computed(() => {
       </li>
       <li>
         <RouterLink
-          :to="{ name: 'login' }"
+          :to="{ name: 'signin' }"
           class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
           active-class="text-bb-red lg:border-r-4 lg:border-bb-red lg:font-semibold"
         >

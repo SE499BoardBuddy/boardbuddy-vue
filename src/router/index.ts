@@ -4,7 +4,7 @@ import ChatView from '@/views/ChatView.vue'
 import CollectionInsideView from '@/views/CollectionInsideView.vue'
 import CollectionView from '@/views/CollectionView.vue'
 import HomeView from '@/views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
+import SigninView from '@/views/SigninView.vue'
 import SignupView from '@/views/SignupView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -43,9 +43,9 @@ const router = createRouter({
       component: AccountView
     },
     {
-      path: '/login',
-      name: 'login',
-      component: LoginView
+      path: '/signin',
+      name: 'signin',
+      component: SigninView
     },
     {
       path: '/signup',
