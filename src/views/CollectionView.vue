@@ -2,23 +2,26 @@
 import navBarVue from '@/components/NavBar.vue'
 import headerVue from '@/components/HeaderBar.vue'
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 const colList = ref<number[]>([])
-for (var i = 1; i <= 30; i++) {
-  colList.value.push(i)
-}
+// for (var i = 1; i <= 30; i++) {
+//   colList.value.push(i)
+// }
+
+const authStore = useAuthStore()
 </script>
 <template>
   <headerVue></headerVue>
 
   <div class="min-w-screen min-h-screen bg-bb-black lg:px-[16%] text-bb-white overflow-hidden pt-8">
-    <div
+    <!-- <div
       class="text-2xl font-semibold text-bb-white h-[8vh] justify-between bg-bb-black px-12 w-full"
     >
       <div class="flex flex-row justify-center w-full h-full">
         <p
           class="flex flex-row w-full my-auto text-2xl font-bold leading-none h-fit text-bb-red lg:w-auto"
         >
-          Username
+          {{ authStore.user == null ? 'not login' : authStore.user.username }}
           <button>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -37,27 +40,12 @@ for (var i = 1; i <= 30; i++) {
           </button>
         </p>
       </div>
-    </div>
+    </div> -->
 
     <div
       class="text-2xl font-semibold text-bb-white h-[12vh] justify-between bg-bb-black px-12 w-full"
     >
       <div class="flex flex-row justify-between w-full h-full border-b-2 border-bb-black-light">
-        <RouterLink
-          :to="{ name: 'chat' }"
-          class="w-[10%] flex justify-center my-auto p-2 lg:hidden"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-          </svg>
-        </RouterLink>
         <p
           class="my-auto text-2xl w-[80%] font-semibold leading-none text-left h-fit text-bb-white lg:w-auto"
         >
@@ -86,7 +74,7 @@ for (var i = 1; i <= 30; i++) {
         </button>
       </div>
     </div>
-    <div class="w-full h-full mx-auto py-8 lg:w-[90%]">
+    <div class="w-full h-full mx-auto py-8 lg:w-[90%]" v-if="colList.length != 0">
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <RouterLink
           :to="{ name: 'collectionInside' }"
@@ -119,6 +107,40 @@ for (var i = 1; i <= 30; i++) {
           <p class="text-base font-medium truncate lg:text-lg">Collections</p>
           <p class="text-xs">123 Games</p>
         </RouterLink>
+      </div>
+    </div>
+    <div class="w-full h-[80vh] mx-auto py-8 lg:w-[90%]" v-else>
+      <div class="flex flex-col justify-center h-full">
+        <div class="flex flex-col items-center max-w-lg mx-auto">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-32 h-32 mb-12"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+            />
+          </svg>
+
+          <p class="mb-4 text-xl font-semibold">Your collections is empty!</p>
+          <p class="mb-8 leading-relaxed">
+            &emsp;Don't worry! You can start creating collections by using the top right button. You
+            can also browse BoardBuddy for board games you would like to add to your collections by
+            using the
+            <span class="font-semibold">'Browse Board Games'</span> button below.
+          </p>
+          <RouterLink
+            :to="{ name: 'home' }"
+            class="inline-block px-5 py-3 text-sm font-medium text-white transition duration-300 rounded-lg bg-bb-red hover:bg-bb-orange"
+          >
+            Browse Board Games
+          </RouterLink>
+        </div>
       </div>
     </div>
   </div>

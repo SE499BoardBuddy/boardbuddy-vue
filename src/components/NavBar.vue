@@ -1,13 +1,30 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/auth'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
+const authStore = useAuthStore()
 
 const currentRouteName = computed(() => {
   return router.currentRoute
 })
+
+function signout() {
+  if (confirm('Are you sure you want to sign out?')) {
+    authStore.logout()
+    router.push({ name: 'signin' })
+  }
+}
 </script>
 <template>
+  <!-- <dialog   open class="fixed top-0 left-0 z-20 w-screen h-screen bg-black bg-opacity-50">
+    <div class="bg-bb-black text-bb-white">
+      <p>Greetings, one and all!</p>
+      <form method="dialog">
+        <button>OK</button>
+      </form>
+    </div>
+  </dialog> -->
   <nav
     class="w-full pb-2 bg-bb-black h-[10vh] fixed bottom-0 right-0 left-0 lg:top-0 lg:w-[16%] lg:h-full lg:pl-2 border-t-2 border-bb-black-light lg:border-r-2 lg:border-t-0"
   >
@@ -15,9 +32,9 @@ const currentRouteName = computed(() => {
       ><img src="../assets/logo-text-dark.svg" class="lg:h-[8vh]" />
     </RouterLink>
     <ul
-      class="grid w-full h-full grid-cols-4 text-xs lg:text-base text-bb-white lg:grid-rows-4 lg:grid-cols-none lg:h-[30%]"
+      class="grid w-full h-full grid-cols-4 text-xs lg:text-base text-bb-white lg:grid-cols-none lg:grid-rows-4 lg:h-[30%]"
     >
-      <li>
+      <li v-if="!authStore.isAdmin">
         <RouterLink
           :to="{ name: 'chatting' }"
           class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
@@ -95,7 +112,7 @@ const currentRouteName = computed(() => {
         </RouterLink>
       </li>
 
-      <li>
+      <li v-if="!authStore.isAdmin">
         <RouterLink
           :to="{ name: 'collection' }"
           class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
@@ -131,11 +148,46 @@ const currentRouteName = computed(() => {
           <p class="lg:ml-2">Collections</p>
         </RouterLink>
       </li>
-      <li>
+      <li v-if="authStore.isAdmin">
+        <RouterLink
+          :to="{ name: 'admin' }"
+          class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
+          active-class="text-bb-red lg:border-r-4 lg:border-bb-red lg:font-semibold"
+        >
+          <svg
+            v-if="currentRouteName.value.name == 'collection'"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z"
+            />
+          </svg>
+
+          <svg
+            v-else
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
+            />
+          </svg>
+          <p class="lg:ml-2">Admin</p>
+        </RouterLink>
+      </li>
+      <li v-if="authStore.loginState == false">
         <RouterLink
           :to="{ name: 'signin' }"
           class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
-          active-class="text-bb-red lg:border-r-4 lg:border-bb-red lg:font-semibold"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -155,11 +207,10 @@ const currentRouteName = computed(() => {
           <p class="lg:ml-2">Sign in</p>
         </RouterLink>
       </li>
-      <!-- <li>
-        <RouterLink
-          :to="{ name: 'profile' }"
-          class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
-          active-class="text-bb-red lg:border-r-4 lg:border-bb-red lg:font-semibold"
+      <li v-else>
+        <button
+          @click="signout"
+          class="flex flex-col items-center justify-center w-full h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -177,8 +228,8 @@ const currentRouteName = computed(() => {
           </svg>
 
           <p class="lg:ml-2">Sign out</p>
-        </RouterLink>
-      </li> -->
+        </button>
+      </li>
     </ul>
   </nav>
 </template>

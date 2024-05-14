@@ -1,5 +1,26 @@
 <script setup lang="ts">
-import navBarVue from '@/components/NavBar.vue'
+import { useAuthStore } from '@/stores/auth'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const authStore = useAuthStore()
+const router = useRouter()
+
+const email = ref('')
+const username = ref('')
+const password = ref('')
+
+function register() {
+  authStore.fake_register(email.value, username.value, password.value).then(
+    () => {
+      console.log(authStore.mock)
+      router.push({ name: 'chatting' })
+    },
+    (reject) => {
+      console.log(reject)
+    }
+  )
+}
 </script>
 
 <template>
@@ -16,14 +37,15 @@ import navBarVue from '@/components/NavBar.vue'
         <p class="mt-4 text-bb-white">Please enter your details</p>
       </div>
 
-      <form action="#" class="max-w-md mx-auto mt-8 mb-0 space-y-4">
+      <form @submit.prevent="register" class="max-w-md mx-auto mt-8 mb-0 space-y-4">
         <div>
           <label for="email" class="sr-only">Email</label>
 
           <div class="relative">
             <input
+              v-model="email"
               type="email"
-              class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
+              class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"
               placeholder="Enter email"
             />
 
@@ -51,8 +73,9 @@ import navBarVue from '@/components/NavBar.vue'
 
           <div class="relative">
             <input
+              v-model="username"
               type="username"
-              class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
+              class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"
               placeholder="Enter username"
             />
 
@@ -86,8 +109,9 @@ import navBarVue from '@/components/NavBar.vue'
 
           <div class="relative">
             <input
+              v-model="password"
               type="password"
-              class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
+              class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"
               placeholder="Enter password"
             />
 

@@ -1,5 +1,29 @@
 <script setup lang="ts">
-import navBarVue from '@/components/NavBar.vue'
+import { useAuthStore } from '@/stores/auth'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const authStore = useAuthStore()
+const router = useRouter()
+
+const email = ref('')
+const password = ref('')
+
+function login() {
+  authStore.fake_login(email.value, password.value).then(
+    (resolve) => {
+      console.log(resolve)
+      if (authStore.user !== null && authStore.user.roles.includes('ROLE_ADMIN')) {
+        router.push({ name: 'admin' })
+      } else {
+        router.push({ name: 'chatting' })
+      }
+    },
+    (reject) => {
+      console.log(reject)
+    }
+  )
+}
 </script>
 
 <template>
@@ -14,12 +38,13 @@ import navBarVue from '@/components/NavBar.vue'
         <p class="mt-4">Please enter your details.</p>
       </div>
 
-      <form action="#" class="max-w-md mx-auto mt-8 mb-0 space-y-4">
+      <form @submit.prevent="login" class="max-w-md mx-auto mt-8 mb-0 space-y-4">
         <div>
           <label for="email" class="sr-only">Email</label>
 
           <div class="relative">
             <input
+              v-model="email"
               type="email"
               class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"
               placeholder="Enter email"
@@ -49,6 +74,7 @@ import navBarVue from '@/components/NavBar.vue'
 
           <div class="relative">
             <input
+              v-model="password"
               type="password"
               class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"
               placeholder="Enter password"
