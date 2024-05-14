@@ -6,8 +6,6 @@ import headerVue from '@/components/HeaderBar.vue'
   <headerVue></headerVue>
   <div
     class="w-full h-full bg-bb-black pt-[8vh] pb-[10vh] lg:pt-0 lg:pb-0 lg:pl-[17%] text-bb-white"
-  >
-    Account put stuff here
-  </div>
+  ></div>
   <navBarVue></navBarVue>
 </template>

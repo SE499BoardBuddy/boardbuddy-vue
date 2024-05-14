@@ -9,11 +9,9 @@ import navBarVue from '@/components/NavBar.vue'
         <img src="../assets/logo-text-dark.svg" class="max-w-md mx-auto mb-8" />
       </RouterLink>
       <div class="max-w-lg mx-auto text-center">
-        <h1 class="text-2xl font-bold sm:text-3xl text-bb-white">
-          Start chatting with BoardBuddy free!
-        </h1>
+        <h1 class="text-2xl font-bold sm:text-3xl">Welcome!</h1>
 
-        <p class="mt-4 text-bb-white">Please enter your details</p>
+        <p class="mt-4">Please enter your details.</p>
       </div>
 
       <form action="#" class="max-w-md mx-auto mt-8 mb-0 space-y-4">
@@ -23,7 +21,7 @@ import navBarVue from '@/components/NavBar.vue'
           <div class="relative">
             <input
               type="email"
-              class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
+              class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"
               placeholder="Enter email"
             />
 
@@ -47,47 +45,12 @@ import navBarVue from '@/components/NavBar.vue'
         </div>
 
         <div>
-          <label for="username" class="sr-only">Username</label>
-
-          <div class="relative">
-            <input
-              type="username"
-              class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
-              placeholder="Enter username"
-            />
-
-            <span class="absolute inset-y-0 grid px-4 end-0 place-content-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="text-gray-400 size-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-              </svg>
-            </span>
-          </div>
-        </div>
-
-        <div>
           <label for="password" class="sr-only">Password</label>
 
           <div class="relative">
             <input
               type="password"
-              class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
+              class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"
               placeholder="Enter password"
             />
 
@@ -118,12 +81,12 @@ import navBarVue from '@/components/NavBar.vue'
 
         <div class="flex items-center justify-between">
           <p class="text-sm text-bb-white">
-            Already got an account?
+            No account?
             <RouterLink
-              :to="{ name: 'signin' }"
+              :to="{ name: 'signup' }"
               class="underline transition duration-300 text-bb-red hover:text-bb-orange"
               href="#"
-              >Sign In</RouterLink
+              >Sign up</RouterLink
             >
           </p>
 
@@ -131,7 +94,7 @@ import navBarVue from '@/components/NavBar.vue'
             type="submit"
             class="inline-block px-5 py-3 text-sm font-medium text-white transition duration-300 rounded-lg bg-bb-red hover:bg-bb-orange"
           >
-            Sign up
+            Sign in
           </button>
         </div>
       </form>
