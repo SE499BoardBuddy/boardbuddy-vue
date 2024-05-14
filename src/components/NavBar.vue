@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/auth'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
+const authStore = useAuthStore()
 
 const currentRouteName = computed(() => {
   return router.currentRoute
 })
+
+function signout() {
+  authStore.logout()
+  router.push({ name: 'signin' })
+}
 </script>
 <template>
   <nav
@@ -15,7 +22,7 @@ const currentRouteName = computed(() => {
       ><img src="../assets/logo-text-dark.svg" class="lg:h-[8vh]" />
     </RouterLink>
     <ul
-      class="grid w-full h-full grid-cols-4 text-xs lg:text-base text-bb-white lg:grid-rows-4 lg:grid-cols-none lg:h-[30%]"
+      class="grid w-full h-full grid-cols-4 text-xs lg:text-base text-bb-white lg:grid-cols-none lg:h-[30%]"
     >
       <li>
         <RouterLink
@@ -131,11 +138,10 @@ const currentRouteName = computed(() => {
           <p class="lg:ml-2">Collections</p>
         </RouterLink>
       </li>
-      <li>
+      <li v-if="authStore.loginState == false">
         <RouterLink
           :to="{ name: 'signin' }"
           class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
-          active-class="text-bb-red lg:border-r-4 lg:border-bb-red lg:font-semibold"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -155,11 +161,10 @@ const currentRouteName = computed(() => {
           <p class="lg:ml-2">Sign in</p>
         </RouterLink>
       </li>
-      <!-- <li>
-        <RouterLink
-          :to="{ name: 'profile' }"
-          class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
-          active-class="text-bb-red lg:border-r-4 lg:border-bb-red lg:font-semibold"
+      <li v-if="authStore.loginState == true">
+        <button
+          @click="signout"
+          class="flex flex-col items-center justify-center w-full h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -177,8 +182,8 @@ const currentRouteName = computed(() => {
           </svg>
 
           <p class="lg:ml-2">Sign out</p>
-        </RouterLink>
-      </li> -->
+        </button>
+      </li>
     </ul>
   </nav>
 </template>

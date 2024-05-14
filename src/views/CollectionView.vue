@@ -2,10 +2,13 @@
 import navBarVue from '@/components/NavBar.vue'
 import headerVue from '@/components/HeaderBar.vue'
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 const colList = ref<number[]>([])
 for (var i = 1; i <= 30; i++) {
   colList.value.push(i)
 }
+
+const authStore = useAuthStore()
 </script>
 <template>
   <headerVue></headerVue>
@@ -18,8 +21,8 @@ for (var i = 1; i <= 30; i++) {
         <p
           class="flex flex-row w-full my-auto text-2xl font-bold leading-none h-fit text-bb-red lg:w-auto"
         >
-          Username
-          <button>
+          {{ authStore.user == null ? 'not login' : authStore.user.username }}
+          <!-- <button>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -34,7 +37,7 @@ for (var i = 1; i <= 30; i++) {
                 d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
               />
             </svg>
-          </button>
+          </button> -->
         </p>
       </div>
     </div>
@@ -87,7 +90,7 @@ for (var i = 1; i <= 30; i++) {
       </div>
     </div>
     <div class="w-full h-full mx-auto py-8 lg:w-[90%]">
-      <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-4" v-if="authStore.loginState == true">
         <RouterLink
           :to="{ name: 'collectionInside' }"
           v-for="col in colList"
