@@ -46,6 +46,13 @@ export const useAuthStore = defineStore('auth', {
         },
         isLoggedIn(): boolean {
             return this.token !== null && this.user !== null
+        },
+        isAdmin(): boolean {
+            let boolToReturn = false
+            if (this.user != null) {
+                boolToReturn = this.user.roles.includes('ROLE_ADMIN')
+            }
+            return boolToReturn
         }
     },
     actions: {
