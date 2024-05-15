@@ -2,6 +2,7 @@
 import navBarVue from '@/components/NavBar.vue'
 import headerVue from '@/components/HeaderBar.vue'
 import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
 const colList = ref<number[]>([])
 for (var i = 1; i <= 30; i++) {
   colList.value.push(i)
@@ -68,7 +69,8 @@ const filterList = ref([
   >
     <div class="w-full h-full mx-auto py-8 lg:w-[90%]">
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <button
+        <RouterLink
+          :to="{ name: 'product' }"
           v-for="col in colList"
           :key="col"
           class="px-2 pt-2 pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-90 hover:scale-[1.05]"
@@ -82,7 +84,7 @@ const filterList = ref([
             </div>
           </div>
           <p class="text-lg font-medium truncate">Game name here</p>
-        </button>
+        </RouterLink>
       </div>
     </div>
   </div>

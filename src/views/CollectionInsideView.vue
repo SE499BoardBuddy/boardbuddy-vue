@@ -61,7 +61,7 @@ for (var i = 1; i <= 30; i++) {
     <div class="w-full h-full mx-auto py-8 lg:w-[90%]">
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <RouterLink
-          :to="{ name: 'collectionInside' }"
+          :to="{ name: 'product' }"
           v-for="col in colList"
           :key="col"
           class="px-2 pt-2 pb-2 lg:pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-90 hover:scale-[1.05]"

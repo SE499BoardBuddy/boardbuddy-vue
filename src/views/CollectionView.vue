@@ -4,9 +4,9 @@ import headerVue from '@/components/HeaderBar.vue'
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 const colList = ref<number[]>([])
-// for (var i = 1; i <= 30; i++) {
-//   colList.value.push(i)
-// }
+for (var i = 1; i <= 30; i++) {
+  colList.value.push(i)
+}
 
 const authStore = useAuthStore()
 </script>
