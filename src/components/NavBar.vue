@@ -36,12 +36,12 @@ function signout() {
     >
       <li v-if="!authStore.isAdmin">
         <RouterLink
-          :to="{ name: 'chatting' }"
+          :to="{ name: 'home' }"
           class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
           active-class="text-bb-red lg:border-r-4 lg:border-bb-red lg:font-semibold"
         >
           <svg
-            v-if="currentRouteName.value.name == 'chatting'"
+            v-if="currentRouteName.value.name == 'home'"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
@@ -74,12 +74,12 @@ function signout() {
       </li>
       <li>
         <RouterLink
-          :to="{ name: 'home' }"
+          :to="{ name: 'browse' }"
           class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"
           active-class="text-bb-red lg:border-r-4 lg:border-bb-red lg:font-semibold"
         >
           <svg
-            v-if="currentRouteName.value.name == 'home'"
+            v-if="currentRouteName.value.name == 'browse'"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"

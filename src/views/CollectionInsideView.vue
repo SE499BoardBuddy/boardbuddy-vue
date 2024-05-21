@@ -64,7 +64,7 @@ for (var i = 1; i <= 30; i++) {
           :to="{ name: 'product' }"
           v-for="col in colList"
           :key="col"
-          class="px-2 pt-2 pb-2 lg:pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-90 hover:scale-[1.05]"
+          class="px-2 pt-2 pb-2 lg:pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-90 hover:scale-105"
         >
           <div class="flex flex-row h-[6rem] lg:h-[9rem] mb-2">
             <div class="w-full">

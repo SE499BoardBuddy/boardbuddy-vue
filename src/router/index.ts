@@ -3,21 +3,30 @@ import ChattingView from '@/views/ChattingView.vue'
 import ChatView from '@/views/ChatView.vue'
 import CollectionInsideView from '@/views/CollectionInsideView.vue'
 import CollectionView from '@/views/CollectionView.vue'
-import HomeView from '@/views/HomeView.vue'
+import BrowseView from '@/views/BrowseView.vue'
 import SigninView from '@/views/SigninView.vue'
 import SignupView from '@/views/SignupView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import ProductView from '@/views/ProductView.vue'
 import AdminView from '@/views/AdminView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '@/views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/home',
+      path: '/',
       name: 'home',
       component: HomeView,
+      meta: {
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/browse',
+      name: 'browse',
+      component: BrowseView,
       meta: {
         requiresAuth: false
       },
@@ -31,7 +40,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/',
+      path: '/chatting',
       name: 'chatting',
       component: ChattingView,
       meta: {
