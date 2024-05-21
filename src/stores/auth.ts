@@ -22,27 +22,27 @@ export const useAuthStore = defineStore('auth', {
                 email: 'admin@admin',
                 username: 'admin',
                 password: 'admin',
-                roles: ['ROLE_ADMIN'],
+                roles: 'ROLE_ADMIN',
             },
             {
                 id: 1,
                 email: 'user_user@cmu.ac.th',
                 username: 'InsertUsernameHere',
                 password: '1234',
-                roles: ['ROLE_USER'],
+                roles: 'ROLE_USER',
             },
             {
                 id: 2,
                 email: 'hello@cmu.ac.th',
                 username: 'helloName',
                 password: '1234',
-                roles: ['ROLE_USER'],
+                roles: 'ROLE_USER',
             },
         ]
     }),
     getters: {
         currentUserName(): string {
-            return this.user?.roles.includes('ROLE_ADMIN') ? 'ADMIN' : this.user?.username || ''
+            return this.user?.roles == 'ROLE_ADMIN' ? 'ADMIN' : this.user?.username || ''
         },
         isLoggedIn(): boolean {
             return this.token !== null && this.user !== null
@@ -50,7 +50,7 @@ export const useAuthStore = defineStore('auth', {
         isAdmin(): boolean {
             let boolToReturn = false
             if (this.user != null) {
-                boolToReturn = this.user.roles.includes('ROLE_ADMIN')
+                boolToReturn = this.user.roles == 'ROLE_ADMIN'
             }
             return boolToReturn
         }
@@ -96,7 +96,7 @@ export const useAuthStore = defineStore('auth', {
                             email: email,
                             username: username,
                             password: password,
-                            roles: ['ROLE_USER'],
+                            roles: 'ROLE_USER',
                         }
                         this.mock.push(accountToAdd)
                         this.token = Math.floor(Math.random() * 100) + ''
@@ -112,11 +112,11 @@ export const useAuthStore = defineStore('auth', {
             })
 
         },
-        login(username: string, password: string) {
+        login(email: string, password: string) {
             console.log("login")
             return apiClient
-                .post('/api/v1/auth/authenticate', {
-                    username: username,
+                .post('/login', {
+                    email: email,
                     password: password
                 })
                 .then((response) => {
@@ -125,16 +125,17 @@ export const useAuthStore = defineStore('auth', {
                     this.loginState = true
                     localStorage.setItem('access_token', this.token as string)
                     localStorage.setItem('user', JSON.stringify(this.user))
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+                    axios.defaults.headers.common['x-access-token'] = `${this.token}`
                     console.log(response)
                     return response
                 })
         },
-        register(username: string, password: string) {
+        register(email: string, password: string, username: string) {
             return apiClient
-                .post('/api/v1/auth/register', {
-                    username: username,
+                .post('/signup', {
+                    email: email,
                     password: password,
+                    name: username
                 })
                 .then((response) => {
                     this.token = response.data.access_token
@@ -142,7 +143,7 @@ export const useAuthStore = defineStore('auth', {
                     this.loginState = true
                     localStorage.setItem('access_token', this.token as string)
                     localStorage.setItem('user', JSON.stringify(this.user))
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+                    axios.defaults.headers.common['x-access-token'] = `${this.token}`
                     console.log(response)
                     return response
 
