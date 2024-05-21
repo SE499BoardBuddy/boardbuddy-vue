@@ -13,7 +13,7 @@ function login() {
   authStore.fake_login(email.value, password.value).then(
     (resolve) => {
       console.log(resolve)
-      if (authStore.user !== null && authStore.user.roles.includes('ROLE_ADMIN')) {
+      if (authStore.user !== null && authStore.user.roles == 'ROLE_ADMIN') {
         router.push({ name: 'admin' })
       } else {
         router.push({ name: 'chatting' })
