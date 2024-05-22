@@ -2,13 +2,13 @@
 import navBarVue from '@/components/NavBar.vue'
 </script>
 <template class="bg-bb-black">
-  <article class="flex bg-bb-black transition lg:pl-[16%] h-full">
-    <div class="flex flex-col justify-between flex-1">
+  <article class="flex bg-bb-black transition lg:pl-[16%] h-full py-[8vh]">
+    <div class="flex flex-col justify-between mx-auto w-[80%]">
       <div class="hidden sm:block sm:shrink-0">
         <img
           alt=""
           src="https://cdn.arstechnica.net/wp-content/uploads/2019/03/Wingspan17-800x600.jpg"
-          class="object-cover w-full h-96"
+          class="object-cover w-full rounded-lg h-96"
         />
       </div>
 
@@ -59,7 +59,7 @@ import navBarVue from '@/components/NavBar.vue'
       <div class="sm:flex sm:items-end sm:justify-end">
         <a
           href="#"
-          class="block px-5 py-3 text-xs font-bold text-center text-gray-900 uppercase transition bg-bb-red hover:bg-yellow-400"
+          class="block px-5 py-3 text-xs font-bold text-center uppercase transition duration-300 rounded-lg text-bb-white bg-bb-red hover:bg-bb-orange"
         >
           Add to collection
         </a>

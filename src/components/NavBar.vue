@@ -28,7 +28,7 @@ function signout() {
   <nav
     class="w-full pb-2 bg-bb-black h-[10vh] fixed bottom-0 right-0 left-0 lg:top-0 lg:w-[16%] lg:h-full lg:pl-2 border-t-2 border-bb-black-light lg:border-r-2 lg:border-t-0"
   >
-    <RouterLink :to="{ name: 'chatting' }" class="hidden w-auto my-6 mr-2 lg:flex"
+    <RouterLink :to="{ path: '/' }" class="hidden w-auto my-6 mr-2 lg:flex"
       ><img src="../assets/logo-text-dark.svg" class="lg:h-[8vh]" />
     </RouterLink>
     <ul

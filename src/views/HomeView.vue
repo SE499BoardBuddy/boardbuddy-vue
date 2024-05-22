@@ -24,7 +24,7 @@ const games = ref([0, 1, 2, 3, 4, 5])
     <p
       class="my-auto text-2xl w-[80%] font-semibold leading-none text-left h-fit text-bb-white lg:w-auto"
     >
-      Chat with BoardBuddy
+      Choose which board game to ask with BoardBuddy!
     </p>
   </div>
   <div
@@ -33,17 +33,17 @@ const games = ref([0, 1, 2, 3, 4, 5])
     <div class="py-4 lg:w-[90%] lg:mx-auto grid grid-cols-3 gap-2">
       <RouterLink
         :to="{ name: 'chatting' }"
-        class="h-64 p-2 transition duration-300 rounded-lg group bg-bb-black hover:bg-bb-black-light hover:scale-105"
+        class="h-64 p-2 truncate transition duration-300 rounded-lg group bg-bb-black hover:bg-bb-black-light hover:scale-105"
         v-for="game in games"
         :key="game"
       >
-        <div class="w-full h-3/4">
+        <div class="w-full mb-2 h-4/5">
           <img
             src="https://cf.geekdo-images.com/jAbc4LK0aCkV-JDLuZAmog__imagepagezoom/img/0eSIrSamdXQ1tIrXVtIoUfmtJCQ=/fit-in/1200x900/filters:no_upscale():strip_icc()/pic7774173.jpg"
             class="object-cover object-right-top w-full h-full transition duration-300 border-r-2 rounded-lg group-hover:opacity-100 opacity-80 border-bb-black"
           />
         </div>
-        test
+        <span class="w-full text-xl font-semibold">Game {{ game }}</span>
       </RouterLink>
     </div>
   </div>
