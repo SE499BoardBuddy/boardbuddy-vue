@@ -16,7 +16,7 @@ function login() {
       if (authStore.user !== null && authStore.user.roles == 'ROLE_ADMIN') {
         router.push({ name: 'admin' })
       } else {
-        router.push({ name: 'chatting' })
+        router.push({ name: 'home' })
       }
     }
     // (reject) => {
@@ -29,7 +29,7 @@ function login() {
 <template>
   <div class="flex flex-col justify-center min-h-screen bg-bb-black min-w-screen">
     <div class="rounded-lg bg-bb-black-light text-bb-white w-[40%] py-16 mx-auto">
-      <RouterLink :to="{ name: 'chatting' }" class="">
+      <RouterLink :to="{ name: 'home' }" class="">
         <img src="../assets/logo-text-dark.svg" class="max-w-md mx-auto mb-8" />
       </RouterLink>
       <div class="max-w-lg mx-auto text-center">

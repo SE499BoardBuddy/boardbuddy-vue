@@ -80,7 +80,7 @@ const authStore = useAuthStore()
           :to="{ name: 'collectionInside' }"
           v-for="col in colList"
           :key="col"
-          class="px-2 pt-2 pb-2 lg:pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-90 hover:scale-105"
+          class="px-2 pt-2 pb-2 text-left transition duration-300 rounded-lg lg:pb-4 hover:bg-bb-black-light group active:scale-90 hover:scale-105"
         >
           <div class="flex flex-row h-[6rem] lg:h-[9rem] mb-2">
             <div class="w-[60%]">

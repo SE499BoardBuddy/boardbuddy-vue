@@ -14,7 +14,7 @@ function register() {
   authStore.register(email.value, username.value, password.value).then(
     () => {
       // console.log(authStore.mock)
-      router.push({ name: 'chatting' })
+      router.push({ name: 'home' })
     }
     // (reject) => {
     //   console.log(reject)
@@ -26,7 +26,7 @@ function register() {
 <template>
   <div class="flex flex-col justify-center min-h-screen bg-bb-black min-w-screen">
     <div class="rounded-lg bg-bb-black-light text-bb-white w-[40%] py-16 mx-auto">
-      <RouterLink :to="{ name: 'chatting' }" class="">
+      <RouterLink :to="{ name: 'home' }" class="">
         <img src="../assets/logo-text-dark.svg" class="max-w-md mx-auto mb-8" />
       </RouterLink>
       <div class="max-w-lg mx-auto text-center">
