@@ -11,7 +11,7 @@ const username = ref('')
 const password = ref('')
 
 function register() {
-  authStore.register(email.value, username.value, password.value).then(
+  authStore.fake_register(email.value, username.value, password.value).then(
     () => {
       // console.log(authStore.mock)
       router.push({ name: 'home' })
@@ -25,7 +25,7 @@ function register() {
 
 <template>
   <div class="flex flex-col justify-center min-h-screen bg-bb-black min-w-screen">
-    <div class="rounded-lg bg-bb-black-light text-bb-white w-[40%] py-16 mx-auto">
+    <div class="rounded-lg bg-bb-black-light text-bb-white lg:w-[40%] w-[90%] px-4 py-16 mx-auto">
       <RouterLink :to="{ name: 'home' }" class="">
         <img src="../assets/logo-text-dark.svg" class="max-w-md mx-auto mb-8" />
       </RouterLink>

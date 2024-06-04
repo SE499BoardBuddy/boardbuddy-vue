@@ -13,7 +13,7 @@ const authStore = useAuthStore()
 <template>
   <headerVue></headerVue>
 
-  <div class="min-w-screen min-h-screen bg-bb-black lg:px-[16%] text-bb-white overflow-hidden pt-8">
+  <div class="min-w-screen min-h-screen bg-bb-black lg:px-[16%] px-2 text-bb-white overflow-hidden pt-8">
     <!-- <div
       class="text-2xl font-semibold text-bb-white h-[8vh] justify-between bg-bb-black px-12 w-full"
     >
@@ -43,7 +43,7 @@ const authStore = useAuthStore()
     </div> -->
 
     <div
-      class="text-2xl font-semibold text-bb-white h-[12vh] justify-between bg-bb-black px-12 w-full"
+      class="text-2xl font-semibold text-bb-white h-[12vh] justify-between bg-bb-black lg:px-12 w-full"
     >
       <div class="flex flex-row justify-between w-full h-full border-b-2 border-bb-black-light">
         <p
@@ -82,7 +82,7 @@ const authStore = useAuthStore()
           :key="col"
           class="px-2 pt-2 pb-2 text-left transition duration-300 rounded-lg lg:pb-4 hover:bg-bb-black-light group active:scale-90 hover:scale-105"
         >
-          <div class="flex flex-row h-[6rem] lg:h-[9rem] mb-2">
+          <div class="flex flex-row h-[6rem] md:h-[16rem] lg:h-[9rem] mb-2">
             <div class="w-[60%]">
               <img
                 src="https://cf.geekdo-images.com/jAbc4LK0aCkV-JDLuZAmog__imagepagezoom/img/0eSIrSamdXQ1tIrXVtIoUfmtJCQ=/fit-in/1200x900/filters:no_upscale():strip_icc()/pic7774173.jpg"

@@ -10,7 +10,7 @@ const email = ref('')
 const password = ref('')
 
 function login() {
-  authStore.login(email.value, password.value).then(
+  authStore.fake_login(email.value, password.value).then(
     (resolve) => {
       console.log(resolve)
       if (authStore.user !== null && authStore.user.roles == 'ROLE_ADMIN') {
@@ -28,7 +28,7 @@ function login() {
 
 <template>
   <div class="flex flex-col justify-center min-h-screen bg-bb-black min-w-screen">
-    <div class="rounded-lg bg-bb-black-light text-bb-white w-[40%] py-16 mx-auto">
+    <div class="rounded-lg bg-bb-black-light text-bb-white lg:w-[40%] w-[90%] py-16 mx-auto px-4">
       <RouterLink :to="{ name: 'home' }" class="">
         <img src="../assets/logo-text-dark.svg" class="max-w-md mx-auto mb-8" />
       </RouterLink>
