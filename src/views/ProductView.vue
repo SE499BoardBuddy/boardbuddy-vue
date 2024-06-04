@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import navBarVue from '@/components/NavBar.vue'
+import headerVue from '@/components/HeaderBar.vue'
 </script>
 <template class="bg-bb-black">
-  <article class="flex bg-bb-black transition lg:pl-[16%] h-full py-[8vh]">
+  <headerVue></headerVue>
+
+  <article class="flex bg-bb-black transition lg:pl-[16%] h-full py-[13vh]">
     <div class="flex flex-col justify-between mx-auto w-[80%]">
-      <div class="hidden sm:block sm:shrink-0">
+      <div class="block shrink-0 mb-2">
         <img
           alt=""
           src="https://cdn.arstechnica.net/wp-content/uploads/2019/03/Wingspan17-800x600.jpg"
@@ -12,7 +15,7 @@ import navBarVue from '@/components/NavBar.vue'
         />
       </div>
 
-      <div class="p-4 border-s border-gray-900/10 sm:border-l-transparent sm:p-6">
+      <div class="border-s border-gray-900/10 sm:border-l-transparent sm:p-6">
         <a href="#">
           <h3 class="font-bold uppercase text-bb-white">Wingspan (2019)</h3>
         </a>
@@ -56,7 +59,7 @@ import navBarVue from '@/components/NavBar.vue'
         </div>
       </div>
 
-      <div class="sm:flex sm:items-end sm:justify-end">
+      <div class="sm:flex sm:items-end sm:justify-end mt-4">
         <a
           href="#"
           class="block px-5 py-3 text-xs font-bold text-center uppercase transition duration-300 rounded-lg text-bb-white bg-bb-red hover:bg-bb-orange"
