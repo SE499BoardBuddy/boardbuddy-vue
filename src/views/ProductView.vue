@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import navBarVue from '@/components/NavBar.vue'
+import headerVue from '@/components/HeaderBar.vue'
+import { userBGStore } from '@/stores/boardgame'
+import { storeToRefs } from 'pinia'
+const bgStore = userBGStore()
+const item = storeToRefs(bgStore).currentBoardgame
 </script>
 <template class="bg-bb-black">
   <headerVue></headerVue>
