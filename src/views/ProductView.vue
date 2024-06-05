@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import navBarVue from '@/components/NavBar.vue'
-import { userBGStore } from '@/stores/boardgame'
-import { storeToRefs } from 'pinia'
-const bgStore = userBGStore()
-const item = storeToRefs(bgStore).currentBoardgame
 </script>
 <template class="bg-bb-black">
-  <article class="flex bg-bb-black transition lg:pl-[16%] h-full py-[8vh]">
+  <headerVue></headerVue>
+
+  <article class="flex bg-bb-black transition lg:pl-[16%] h-full py-[13vh]">
     <div class="flex flex-col justify-between mx-auto w-[80%]">
       <div class="hidden sm:block sm:shrink-0">
         <img alt="" :src="item?.image" class="object-cover w-full rounded-lg h-96" />
       </div>
 
-      <div class="p-4 border-s border-gray-900/10 sm:border-l-transparent sm:p-6">
+      <div class="border-s border-gray-900/10 sm:border-l-transparent sm:p-6">
         <a href="#">
           <h3 class="font-bold uppercase text-bb-white">
             {{ item?.name }} ({{ item?.yearpublished }})
@@ -58,7 +56,7 @@ const item = storeToRefs(bgStore).currentBoardgame
         </div>
       </div>
 
-      <div class="sm:flex sm:items-end sm:justify-end">
+      <div class="mt-4 sm:flex sm:items-end sm:justify-end">
         <a
           href="#"
           class="block px-5 py-3 text-xs font-bold text-center uppercase transition duration-300 rounded-lg text-bb-white bg-bb-red hover:bg-bb-orange"

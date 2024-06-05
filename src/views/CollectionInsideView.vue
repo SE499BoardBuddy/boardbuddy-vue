@@ -58,7 +58,7 @@ for (var i = 1; i <= 30; i++) {
         </button>
       </div>
     </div>
-    <div class="w-full h-full mx-auto py-8 lg:w-[90%]">
+    <div class="w-full h-full mx-auto py-8 px-2 lg:w-[90%]">
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <RouterLink
           :to="{ name: 'product' }"
@@ -66,11 +66,11 @@ for (var i = 1; i <= 30; i++) {
           :key="col"
           class="px-2 pt-2 pb-2 lg:pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-90 hover:scale-105"
         >
-          <div class="flex flex-row h-[6rem] lg:h-[9rem] mb-2">
+          <div class="flex flex-row h-[6rem] md:h-[16rem] lg:h-[9rem] mb-2">
             <div class="w-full">
               <img
                 src="https://cf.geekdo-images.com/jAbc4LK0aCkV-JDLuZAmog__imagepagezoom/img/0eSIrSamdXQ1tIrXVtIoUfmtJCQ=/fit-in/1200x900/filters:no_upscale():strip_icc()/pic7774173.jpg"
-                class="object-cover object-right-top w-full h-full transition duration-300 border-r-2 rounded-tl-lg rounded-bl-lg group-hover:opacity-100 opacity-80 border-bb-black"
+                class="object-cover object-right-top w-full h-full transition duration-300 border-r-2 rounded-lg group-hover:opacity-100 opacity-80 border-bb-black"
               />
             </div>
           </div>

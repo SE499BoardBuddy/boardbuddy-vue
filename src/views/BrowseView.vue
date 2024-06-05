@@ -73,13 +73,15 @@ onBeforeRouteUpdate(() => {
 <template>
   <headerVue></headerVue>
   <div
-    class="text-2xl font-semibold text-bb-white h-[12%] z-10 bg-bb-black fixed px-12 top-0 w-[68%] left-[16%] flex flex-row"
+    class="text-2xl font-semibold text-bb-white h-[12%] z-10 px-4 bg-bb-black fixed lg:px-12 w-full lg:top-0 top-[8vh] lg:w-[68%] lg:left-[16%] flex flex-row"
   >
-    <p class="my-auto text-2xl w-[20%] font-semibold leading-none text-left h-fit text-bb-white">
+    <p
+      class="my-auto hidden lg:flex md:flex text-2xl w-[20%] font-semibold leading-none text-left h-fit text-bb-white"
+    >
       Browse
     </p>
     <form
-      class="w-[60%] leading-normal h-fit my-auto text-bb-white"
+      class="lg:w-[60%] w-full leading-normal h-fit my-auto text-bb-white mx-auto"
       @submit.prevent="search(query_term)"
     >
       <label for="default-search" class="mb-2 text-sm font-medium sr-only text-bb-white"
@@ -119,10 +121,11 @@ onBeforeRouteUpdate(() => {
         </button>
       </div>
     </form>
-    <div class="w-[20%]"></div>
+    <div class="w-[20%] hidden"></div>
   </div>
+
   <div
-    class="min-w-screen min-h-screen bg-bb-black pt-[8vh] lg:pt-[12vh] lg:pb-[15vh] lg:px-[16%] text-bb-white overflow-hidden"
+    class="min-w-screen min-h-screen bg-bb-black px-2 pt-[16vh] lg:pt-[12vh] lg:pb-[15vh] lg:px-[16%] text-bb-white overflow-hidden"
   >
     <div class="w-full h-full mx-auto py-8 lg:w-[90%]">
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -133,7 +136,7 @@ onBeforeRouteUpdate(() => {
           :key="item.name"
           class="px-2 pt-2 pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-90 hover:scale-105"
         >
-          <div class="flex flex-row h-[6rem] lg:h-[9rem] mb-2">
+          <div class="flex flex-row h-[6rem] md:h-[16rem] lg:h-[9rem] mb-2">
             <div class="w-full">
               <img
                 :src="item.image"
@@ -147,7 +150,7 @@ onBeforeRouteUpdate(() => {
     </div>
   </div>
   <div
-    class="fixed top-0 right-0 h-full w-[16%] bg-bb-black border-l-2 pr-2 border-bb-black-light text-bb-white flex flex-col"
+    class="fixed top-0 right-0 h-full w-[16%] hidden bg-bb-black border-l-2 pr-2 border-bb-black-light text-bb-white lg:flex flex-col"
   >
     <div class="w-full pl-4 h-[12%] text-lg font-medium flex flex-col justify-center">Filters</div>
     <div class="flex flex-col" v-for="filter in filterList" :key="filter">

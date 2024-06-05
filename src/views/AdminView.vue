@@ -2,7 +2,7 @@
 import navBarVue from '@/components/NavBar.vue'
 </script>
 <template>
-  <article class="flex bg-bb-black transition lg:pl-[16%] h-full py-[8vh]">
+  <article class="flex bg-bb-black transition lg:pl-[16%] h-full pt-[8vh] pb-[12vh]">
     <div class="flex flex-col justify-between mx-auto w-[80%]">
       <div class="flex items-center justify-center w-full">
         <label
