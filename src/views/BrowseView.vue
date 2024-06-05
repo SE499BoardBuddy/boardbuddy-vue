@@ -2,7 +2,11 @@
 import navBarVue from '@/components/NavBar.vue'
 import headerVue from '@/components/HeaderBar.vue'
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { onBeforeRouteUpdate, RouterLink } from 'vue-router'
+import { userBGStore } from '@/stores/boardgame'
+import IRService from '@/services/IRService'
+import router from '@/router'
+import type { Boardgame } from '@/type'
 const colList = ref<number[]>([])
 for (var i = 1; i <= 30; i++) {
   colList.value.push(i)
@@ -16,6 +20,55 @@ const filterList = ref([
   'Player count',
   'Rating score'
 ])
+
+const query_term = ref('')
+const searched_item = ref<Array<Boardgame>>([])
+const bgStore = userBGStore()
+
+async function search(query: string) {
+  // console.log(query_term.value)
+  await IRService.search(query).then((response) => {
+    console.log('search')
+    bgStore.setCurrentResponse(response.data)
+    console.log(bgStore.res)
+    setTerm()
+    // router.go(0)
+  })
+}
+
+function setTerm() {
+  // needSuggestion.value = false
+  if (bgStore.res != null && bgStore.res.suggest != null) {
+    // console.log(recipeStore.res.suggest.Name)
+    // var text = ''
+    // recipeStore.res.suggest.Name.forEach((element) => {
+    //   if (element.options != null && element.options.length != 0) {
+    //     console.log(element.options[0].text)
+    //     text = text + ' ' + element.options[0].text
+    //     needSuggestion.value = true
+    //   } else {
+    //     text = text + ' ' + element.text
+    //   }
+    // })
+    // suggested_term.value = text.trim()
+    // console.log('suggested_term: ' + suggested_term.value)
+    if (bgStore.res.results != null) {
+      searched_item.value = bgStore.res.results
+    }
+    console.log(searched_item.value)
+  }
+}
+
+function setCurrent(item: Boardgame) {
+  bgStore.setCurrentBoardgame(item)
+  console.log(bgStore.currentBoardgame)
+}
+
+setTerm()
+
+onBeforeRouteUpdate(() => {
+  setTerm()
+})
 </script>
 <template>
   <headerVue></headerVue>
@@ -25,7 +78,10 @@ const filterList = ref([
     <p class="my-auto text-2xl w-[20%] font-semibold leading-none text-left h-fit text-bb-white">
       Browse
     </p>
-    <form class="w-[60%] leading-normal h-fit my-auto text-bb-white">
+    <form
+      class="w-[60%] leading-normal h-fit my-auto text-bb-white"
+      @submit.prevent="search(query_term)"
+    >
       <label for="default-search" class="mb-2 text-sm font-medium sr-only text-bb-white"
         >Search</label
       >
@@ -48,6 +104,7 @@ const filterList = ref([
           </svg>
         </div>
         <input
+          v-model="query_term"
           type="search"
           id="default-search"
           class="block w-full h-full px-4 py-2 text-sm border rounded-lg border-bb-black-light ps-10 bg-bb-black focus:ring-bb-red focus:border-bb-red"
@@ -70,20 +127,21 @@ const filterList = ref([
     <div class="w-full h-full mx-auto py-8 lg:w-[90%]">
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <RouterLink
-          :to="{ name: 'product' }"
-          v-for="col in colList"
-          :key="col"
+          @click="setCurrent(item)"
+          :to="{ name: 'product', params: { id: item.name } }"
+          v-for="item in searched_item"
+          :key="item.name"
           class="px-2 pt-2 pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-90 hover:scale-105"
         >
           <div class="flex flex-row h-[6rem] lg:h-[9rem] mb-2">
             <div class="w-full">
               <img
-                src="https://cf.geekdo-images.com/jAbc4LK0aCkV-JDLuZAmog__imagepagezoom/img/0eSIrSamdXQ1tIrXVtIoUfmtJCQ=/fit-in/1200x900/filters:no_upscale():strip_icc()/pic7774173.jpg"
+                :src="item.image"
                 class="object-cover object-right-top w-full h-full transition duration-300 rounded-lg group-hover:opacity-100 opacity-80"
               />
             </div>
           </div>
-          <p class="text-lg font-medium truncate">Game name here</p>
+          <p class="text-lg font-medium truncate">{{ item.name }}</p>
         </RouterLink>
       </div>
     </div>
