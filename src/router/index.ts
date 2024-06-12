@@ -16,6 +16,8 @@ import { userBGStore } from '@/stores/boardgame'
 import CollectionService from '@/services/CollectionService'
 import { useAuthStore } from '@/stores/auth'
 
+import NProgress from 'nprogress'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -36,6 +38,7 @@ const router = createRouter({
       },
       beforeEnter: async (to) => {
         const bgStore = userBGStore()
+        NProgress.set(0.7)
         await IRService.search('').then((response) => {
           bgStore.setCurrentResponse(response.data)
         })
@@ -50,6 +53,7 @@ const router = createRouter({
       },
       beforeEnter: async (to) => {
         const bgStore = userBGStore()
+        NProgress.set(0.7)
         await IRService.search('').then((response) => {
           bgStore.setCurrentResponse(response.data)
         })
@@ -83,6 +87,7 @@ const router = createRouter({
         const bgStore = userBGStore()
         if (isLoggedIn() && authStore.user != null) {
           console.log(authStore.user.public_id)
+          NProgress.set(0.7)
           await CollectionService.getCollectionsByUserID(authStore.user.public_id).then((response) => {
             bgStore.setCurrentCollections(response.data)
             console.log(bgStore.current_collections)
@@ -103,6 +108,7 @@ const router = createRouter({
         const bgStore = userBGStore()
         const user_id = authStore.user?.public_id
         if (user_id && isLoggedIn()) {
+          NProgress.set(0.7)
           await CollectionService.getCollectionItemsByPublicID(collection_id, user_id)
             .then((response) => {
               bgStore.setCurrentItems(response.data)
@@ -155,6 +161,7 @@ const router = createRouter({
       beforeEnter: async (to) => {
         const id: string = to.params.id as string
         const bgStore = userBGStore()
+        NProgress.set(0.5)
         await CollectionService.getBoardgame(id)
           .then((response) => {
             bgStore.setCurrentBoardgame(response.data)
@@ -168,8 +175,10 @@ const router = createRouter({
         const authStore = useAuthStore()
         if (isLoggedIn() && authStore.user != null) {
           console.log(authStore.user.public_id)
-          await CollectionService.getCollectionsByUserID(authStore.user.public_id).then((response) => {
-            bgStore.setCurrentCollections(response.data)
+          NProgress.set(0.7)
+          await CollectionService.getCollectionToAdd(authStore.user.public_id, id).then((response) => {
+            console.log(response.data)
+            bgStore.setCurrentCollectionsToAdd(response.data.collections)
           })
         }
       }
@@ -190,6 +199,7 @@ const isLoggedIn = () => {
 }
 
 router.beforeEach(async (to, from, next) => {
+  NProgress.start()
   console.log(isLoggedIn())
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!isLoggedIn()) {
@@ -202,4 +212,8 @@ router.beforeEach(async (to, from, next) => {
   }
 
 })
+router.afterEach(() => {
+  NProgress.done()
+})
+
 export default router

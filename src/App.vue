@@ -17,17 +17,18 @@ if (token && user) {
 <template>
   <RouterView v-slot="{ Component, route }">
     <Transition name="fade" mode="out-in">
-      <div :key="route.name">
+      <div v-if="route.name" :key="route.name">
         <component :is="Component" />
       </div>
     </Transition>
   </RouterView>
+  <!-- <RouterView></RouterView> -->
 </template>
 
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.35s ease;
+  transition: opacity 0.3s ease;
 }
 
 .fade-enter-from,

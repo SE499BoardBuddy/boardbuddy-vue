@@ -3,10 +3,42 @@ import navBarVue from '@/components/NavBar.vue'
 import headerVue from '@/components/HeaderBar.vue'
 import { storeToRefs } from 'pinia'
 import { userBGStore } from '@/stores/boardgame'
+import { ref } from 'vue'
+
+import ModalPopup from '@/components/ModalPopup.vue'
+
+const isModalShown = ref(false)
+
 const items = storeToRefs(userBGStore()).current_items
 </script>
 <template>
   <headerVue></headerVue>
+
+  <ModalPopup
+    v-model:visible="isModalShown"
+    header="New Collection"
+    @submit="console.log('submit')"
+  >
+    <template v-slot:content>
+      <label
+        for="collectionName"
+        class="relative block pt-3 overflow-hidden bg-transparent border-b border-bb-maroon text-bb-white"
+      >
+        <input
+          type="text"
+          id="collectionName"
+          placeholder="New collection"
+          class="w-full h-8 p-0 placeholder-transparent bg-transparent border-none peer focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
+        />
+
+        <span
+          class="absolute text-xs transition-all -translate-y-1/2 start-0 top-2 text-bb-red peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:text-xs"
+        >
+          Name
+        </span>
+      </label>
+    </template>
+  </ModalPopup>
 
   <div class="min-w-screen min-h-screen bg-bb-black lg:px-[16%] text-bb-white overflow-hidden">
     <div

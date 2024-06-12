@@ -11,12 +11,14 @@ import { useAuthStore } from '@/stores/auth'
 import router from '@/router'
 import CollectionService from '@/services/CollectionService'
 
+import NProgress from 'nprogress'
+
 const bgStore = userBGStore()
 const authStore = useAuthStore()
 
 const item = storeToRefs(bgStore).current_boardgame
 const isModalShown = ref(false)
-const collectionList = storeToRefs(bgStore).current_collections
+const collectionList = storeToRefs(bgStore).current_collections_to_add
 const colToSave = ref<UserCollection>()
 
 function showModal() {
@@ -28,8 +30,9 @@ function showModal() {
   }
 }
 
-function addItem() {
+async function addItem() {
   if (authStore.user != null && authStore.isLoggedIn) {
+    NProgress.start()
     if (
       item.value != undefined &&
       colToSave.value != undefined &&
@@ -38,18 +41,20 @@ function addItem() {
       item.value.id != null &&
       colToSave.value.public_id != null
     ) {
-      CollectionService.addItem(item.value.id, colToSave.value.public_id).then(() => {
+      await CollectionService.addItem(item.value.id, colToSave.value.public_id).then(() => {
         // console.log('add item')
         isModalShown.value = false
         colToSave.value = undefined
+        NProgress.done()
       })
+      router.go(0)
     }
   }
 }
 </script>
 <template class="bg-bb-black">
   <headerVue></headerVue>
-  <ModalPopup v-model:visible="isModalShown" header="Add To Collection" @submit="addItem">
+  <ModalPopup v-model:visible="isModalShown" header="Add To Your Collection" @submit="addItem">
     <template v-slot:content>
       <div class="h-[320px] overflow-auto">
         <div
@@ -59,13 +64,21 @@ function addItem() {
         >
           <label :for="col.public_id + col.name" class="flex items-center gap-4 cursor-pointer">
             <input
-              class="box-content h-2 w-2 cursor-pointer appearance-none rounded-full border-[5px] border-bb-black bg-bb-black bg-clip-padding outline-none ring-2 ring-bb-white checked:ring-bb-red checked:bg-bb-red transition duration-75"
+              :disabled="col.have"
+              class="box-content h-2 w-2 cursor-pointer appearance-none rounded-full border-[5px] border-bb-black bg-bb-black bg-clip-padding outline-none ring-2 checked:ring-bb-red checked:bg-bb-red transition duration-75"
+              :class="col.have ? 'ring-bb-maroon' : 'ring-bb-white'"
               type="radio"
               :id="col.public_id + col.name"
               :value="col"
               v-model="colToSave"
             />
-            <span>{{ col.name }}</span>
+            <div
+              class="flex flex-col justify-center text-left"
+              :class="col.have ? 'text-bb-red' : 'text-bb-white'"
+            >
+              <span>{{ col.name }}</span>
+              <span class="text-xs font-normal" v-if="col.have">Already in this collection</span>
+            </div>
           </label>
         </div>
       </div>

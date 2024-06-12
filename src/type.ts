@@ -11,7 +11,8 @@ export interface UserCollection {
     public_id: string,
     name: string,
     game_count: number,
-    thumbnail: string[]
+    thumbnail: string[],
+    have: boolean
 }
 
 export interface Collection {

@@ -9,7 +9,7 @@ const emit = defineEmits(['submit'])
 const visible = defineModel('visible', { default: false, required: true })
 </script>
 <template>
-  <div :class="visible ? 'flex' : 'hidden'">
+  <div v-if="visible">
     <div
       class="fixed z-20 flex flex-col justify-center w-screen h-screen bg-black bg-opacity-50"
       @click.self.stop="visible = false"
@@ -30,7 +30,7 @@ const visible = defineModel('visible', { default: false, required: true })
             Cancel
           </button>
           <button
-            @click.prevent.stop="emit('submit')"
+            @click.prevent.stop.once="emit('submit')"
             class="inline-block px-4 py-2 text-sm font-medium text-white transition duration-300 rounded-lg bg-bb-red hover:bg-bb-orange"
           >
             Confirm

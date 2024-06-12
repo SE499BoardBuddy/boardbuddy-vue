@@ -17,6 +17,9 @@ export default {
             user_id: user_id
         })
     },
+    getCollectionToAdd(user_id: string, bg_id: string): Promise<AxiosResponse> {
+        return apiClient.get('/get_collections_to_add?user_id=' + user_id + '&bg_id=' + bg_id)
+    },
     createCollections(name: string, user_id: string): Promise<AxiosResponse> {
         return apiClient.post('/create_collection', {
             name: name,

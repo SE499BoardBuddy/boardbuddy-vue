@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* @layer utilities {
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    background: theme('colors.bb-black.DEFAULT');
+  }
+
+  ::-webkit-scrollbar-track {
+    border-radius: 100vh;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: theme('colors.bb-maroon');
+  }
+
+  ::-webkit-scrollbar-button {
+    background: theme('colors.bb-maroon');
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.bb-red');
+  }
+} */

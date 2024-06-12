@@ -5,6 +5,7 @@ export const userBGStore = defineStore('boardgame', {
         current_boardgame: null as Boardgame | null,
         res: null as ResponseObjectIr | null,
         current_collections: null as UserCollection[] | null,
+        current_collections_to_add: null as UserCollection[] | null,
         current_collection_name: '' as string,
         current_items: null as Collection | null
     }),
@@ -17,6 +18,9 @@ export const userBGStore = defineStore('boardgame', {
         },
         setCurrentCollections(collections: UserCollection[]) {
             this.current_collections = collections
+        },
+        setCurrentCollectionsToAdd(collections: UserCollection[]) {
+            this.current_collections_to_add = collections
         },
         setCurrentItems(current_items: Collection) {
             this.current_items = current_items
