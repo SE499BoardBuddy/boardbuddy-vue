@@ -11,7 +11,7 @@ const username = ref('')
 const password = ref('')
 
 function register() {
-  authStore.fake_register(email.value, username.value, password.value).then(
+  authStore.register(email.value, username.value, password.value).then(
     () => {
       // console.log(authStore.mock)
       router.push({ name: 'home' })

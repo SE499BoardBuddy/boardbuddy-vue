@@ -15,7 +15,7 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         token: null as string | null,
         user: null as User | null,
-        loginState: null as boolean | null,
+        login_state: null as boolean | null,
         mock: [
             {
                 id: 0,
@@ -23,6 +23,8 @@ export const useAuthStore = defineStore('auth', {
                 username: 'admin',
                 password: 'admin',
                 roles: 'ROLE_ADMIN',
+                public_id: '123',
+                collections: []
             },
             {
                 id: 1,
@@ -30,6 +32,8 @@ export const useAuthStore = defineStore('auth', {
                 username: 'InsertUsernameHere',
                 password: '1234',
                 roles: 'ROLE_USER',
+                public_id: '123',
+                collections: []
             },
             {
                 id: 2,
@@ -37,6 +41,8 @@ export const useAuthStore = defineStore('auth', {
                 username: 'helloName',
                 password: '1234',
                 roles: 'ROLE_USER',
+                public_id: '123',
+                collections: []
             },
         ]
     }),
@@ -65,7 +71,7 @@ export const useAuthStore = defineStore('auth', {
                         if (email.match(user.email) && password.match(user.password)) {
                             this.token = Math.floor(Math.random() * 100) + ''
                             this.user = user
-                            this.loginState = true
+                            this.login_state = true
                             localStorage.setItem('access_token', this.token as string)
                             localStorage.setItem('user', JSON.stringify(this.user))
                             isFound = true
@@ -97,11 +103,13 @@ export const useAuthStore = defineStore('auth', {
                             username: username,
                             password: password,
                             roles: 'ROLE_USER',
+                            public_id: '123',
+                            collections: []
                         }
                         this.mock.push(accountToAdd)
                         this.token = Math.floor(Math.random() * 100) + ''
                         this.user = accountToAdd
-                        this.loginState = true
+                        this.login_state = true
                         localStorage.setItem('access_token', this.token as string)
                         localStorage.setItem('user', JSON.stringify(this.user))
                         resolve('success')
@@ -122,7 +130,7 @@ export const useAuthStore = defineStore('auth', {
                 .then((response) => {
                     this.token = response.data.access_token
                     this.user = response.data.user
-                    this.loginState = true
+                    this.login_state = true
                     localStorage.setItem('access_token', this.token as string)
                     localStorage.setItem('user', JSON.stringify(this.user))
                     axios.defaults.headers.common['x-access-token'] = `${this.token}`
@@ -135,12 +143,12 @@ export const useAuthStore = defineStore('auth', {
                 .post('/signup', {
                     email: email,
                     password: password,
-                    name: username
+                    username: username
                 })
                 .then((response) => {
                     this.token = response.data.access_token
                     this.user = response.data.user
-                    this.loginState = true
+                    this.login_state = true
                     localStorage.setItem('access_token', this.token as string)
                     localStorage.setItem('user', JSON.stringify(this.user))
                     axios.defaults.headers.common['x-access-token'] = `${this.token}`
@@ -153,7 +161,7 @@ export const useAuthStore = defineStore('auth', {
             console.log('logout')
             this.token = null
             this.user = null
-            this.loginState = false
+            this.login_state = false
             localStorage.removeItem('access_token')
             localStorage.removeItem('user')
         },

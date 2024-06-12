@@ -1,6 +1,7 @@
 export default {
   plugins: {
     tailwindcss: {},
-    autoprefixer: {},
-  },
+    autoprefixer: {}
+  }
+  // plugins: ['vuetify', 'tailwindcss', 'autoprefixer']
 }

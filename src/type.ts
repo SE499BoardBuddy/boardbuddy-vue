@@ -1,30 +1,50 @@
 export interface User {
     id: number,
+    public_id: string,
     email: string,
     username: string,
     password: string,
     roles: string,
 }
 
+export interface UserCollection {
+    public_id: string,
+    name: string,
+    game_count: number,
+    thumbnail: string[]
+}
+
+export interface Collection {
+    name: string,
+    items: CollectionItems[]
+}
+
+export interface CollectionItems {
+    bg_id: number,
+    image: string,
+    name: string
+}
+
 export interface Boardgame {
+    id: number,
     age: number,
-    boardgameartist: string,
-    boardgamecategory: string,
-    boardgamedesigner: string,
-    boardgamemechanic: string,
-    boardgamepublisher: string,
-    boardgamesubdomain: string,
+    boardgame_artist: string,
+    boardgame_category: string,
+    boardgame_designer: string,
+    boardgame_mechanic: string,
+    boardgame_publisher: string,
+    boardgame_subdomain: string,
     description: string
     image: string
-    maxplayers: number,
-    maxplaytime: number,
-    minplayers: number,
-    minplaytime: number,
+    max_players: number,
+    max_playtime: number,
+    min_players: number,
+    min_playtime: number,
     name: string,
-    playingtime: number,
+    playing_time: number,
     thumbnail: string
-    videogamebg: string,
-    yearpublished: number
+    videogame_bg: string,
+    year_published: number
 }
 
 export interface ResponseObjectIr {

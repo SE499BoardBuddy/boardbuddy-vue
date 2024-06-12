@@ -11,6 +11,10 @@ import ProductView from '@/views/ProductView.vue'
 import AdminView from '@/views/AdminView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import IRService from '@/services/IRService'
+import { userBGStore } from '@/stores/boardgame'
+import CollectionService from '@/services/CollectionService'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +34,26 @@ const router = createRouter({
       meta: {
         requiresAuth: false
       },
+      beforeEnter: async (to) => {
+        const bgStore = userBGStore()
+        await IRService.search('').then((response) => {
+          bgStore.setCurrentResponse(response.data)
+        })
+      }
+    },
+    {
+      path: '/search/:',
+      name: 'browse',
+      component: BrowseView,
+      meta: {
+        requiresAuth: false
+      },
+      beforeEnter: async (to) => {
+        const bgStore = userBGStore()
+        await IRService.search('').then((response) => {
+          bgStore.setCurrentResponse(response.data)
+        })
+      }
     },
     {
       path: '/chat',
@@ -54,14 +78,43 @@ const router = createRouter({
       meta: {
         requiresAuth: true
       },
+      beforeEnter: async (to) => {
+        const authStore = useAuthStore()
+        const bgStore = userBGStore()
+        if (isLoggedIn() && authStore.user != null) {
+          console.log(authStore.user.public_id)
+          await CollectionService.getCollectionsByUserID(authStore.user.public_id).then((response) => {
+            bgStore.setCurrentCollections(response.data)
+            console.log(bgStore.current_collections)
+          })
+        }
+      }
     },
     {
-      path: '/inside',
+      path: '/collection/:collection_id',
       name: 'collectionInside',
       component: CollectionInsideView,
       meta: {
         requiresAuth: false
       },
+      beforeEnter: async (to) => {
+        const collection_id: string = to.params.collection_id as string
+        const authStore = useAuthStore()
+        const bgStore = userBGStore()
+        const user_id = authStore.user?.public_id
+        if (user_id && isLoggedIn()) {
+          await CollectionService.getCollectionItemsByPublicID(collection_id, user_id)
+            .then((response) => {
+              bgStore.setCurrentItems(response.data)
+            })
+            .catch((error) => {
+              console.log(error)
+              if (error.response && error.response.status === 404) {
+                router.push({ 'name': 'collection' })
+              }
+            })
+        }
+      }
     },
     {
       path: '/account',
@@ -98,7 +151,28 @@ const router = createRouter({
     {
       path: '/product/:id',
       name: 'product',
-      component: ProductView
+      component: ProductView,
+      beforeEnter: async (to) => {
+        const id: string = to.params.id as string
+        const bgStore = userBGStore()
+        await CollectionService.getBoardgame(id)
+          .then((response) => {
+            bgStore.setCurrentBoardgame(response.data)
+          })
+          .catch((error) => {
+            if (error.response && error.response.status === 404) {
+              router.push({ 'name': 'browse' })
+            }
+          })
+
+        const authStore = useAuthStore()
+        if (isLoggedIn() && authStore.user != null) {
+          console.log(authStore.user.public_id)
+          await CollectionService.getCollectionsByUserID(authStore.user.public_id).then((response) => {
+            bgStore.setCurrentCollections(response.data)
+          })
+        }
+      }
     },
     {
       path: '/admin',

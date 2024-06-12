@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import IRService from '@/services/IRService'
 import { useAuthStore } from '@/stores/auth'
+import { userBGStore } from '@/stores/boardgame'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -184,7 +186,7 @@ function signout() {
           <p class="lg:ml-2">Admin</p>
         </RouterLink>
       </li>
-      <li v-if="authStore.loginState == false">
+      <li v-if="authStore.login_state == false">
         <RouterLink
           :to="{ name: 'signin' }"
           class="flex flex-col items-center justify-center h-full pt-2 text-center transition duration-300 ease-in-out border-t-2 rounded-none lg:hover:border-bb-red lg:hover:border-r-4 lg:rounded-tl-lg lg:rounded-bl-lg lg:active:scale-90 lg:pt-0 lg:px-4 hover:bg-bb-black-light lg:border-0 lg:justify-start border-bb-black-light lg:flex-row"

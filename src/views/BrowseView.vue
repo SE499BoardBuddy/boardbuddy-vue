@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import navBarVue from '@/components/NavBar.vue'
 import headerVue from '@/components/HeaderBar.vue'
-import { ref } from 'vue'
+import { onBeforeUpdate, ref } from 'vue'
 import { onBeforeRouteUpdate, RouterLink } from 'vue-router'
 import { userBGStore } from '@/stores/boardgame'
 import IRService from '@/services/IRService'
@@ -57,11 +57,6 @@ function setTerm() {
     }
     console.log(searched_item.value)
   }
-}
-
-function setCurrent(item: Boardgame) {
-  bgStore.setCurrentBoardgame(item)
-  console.log(bgStore.currentBoardgame)
 }
 
 setTerm()
@@ -130,8 +125,7 @@ onBeforeRouteUpdate(() => {
     <div class="w-full h-full mx-auto py-8 lg:w-[90%]">
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <RouterLink
-          @click="setCurrent(item)"
-          :to="{ name: 'product', params: { id: item.name } }"
+          :to="{ name: 'product', params: { id: item.id } }"
           v-for="item in searched_item"
           :key="item.name"
           class="px-2 pt-2 pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-90 hover:scale-105"
