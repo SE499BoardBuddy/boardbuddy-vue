@@ -118,7 +118,7 @@ function login() {
 
           <button
             type="submit"
-            class="inline-block px-5 py-3 text-sm font-medium text-white transition duration-300 rounded-lg bg-bb-red hover:bg-bb-orange"
+            class="inline-block px-5 py-3 text-sm font-medium text-white transition duration-300 rounded-lg bg-bb-red hover:bg-bb-orange active:bg-bb-maroon"
           >
             Sign in
           </button>

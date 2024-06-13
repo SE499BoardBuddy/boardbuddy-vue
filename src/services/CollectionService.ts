@@ -37,4 +37,9 @@ export default {
             collection_id: collection_id
         })
     },
+    deleteItem(public_id: string): Promise<AxiosResponse> {
+        return apiClient.post('/delete_item', {
+            public_id: public_id
+        })
+    },
 }   

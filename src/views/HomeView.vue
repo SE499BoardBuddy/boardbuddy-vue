@@ -7,7 +7,7 @@ const games = ref([0, 1, 2, 3, 4, 5])
 <template>
   <headerVue></headerVue>
   <div
-    class="lg:z-10 font-semibold text-bb-white h-[10%] lg:h-[12%] justify-between bg-bb-black absolute lg:fixed px-2 lg:px-12 top-[8vh] lg:top-0 w-full lg:w-[68%] left-0 lg:left-[16%] flex flex-row"
+    class="lg:z-1-header font-semibold text-bb-white h-[10%] lg:h-[12%] justify-between bg-bb-black absolute lg:fixed px-2 lg:px-12 top-[8vh] lg:top-0 w-full lg:w-[68%] left-0 lg:left-[16%] flex flex-row"
   >
     <p
       class="w-auto my-auto text-xl font-semibold text-center lg:leading-none lg:text-left lg:text-2xl h-fit text-bb-white"
@@ -45,7 +45,7 @@ const games = ref([0, 1, 2, 3, 4, 5])
       <div class="py-2 pl-4 font-medium">7/5/2567</div>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">
@@ -73,7 +73,7 @@ const games = ref([0, 1, 2, 3, 4, 5])
       </a>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">
@@ -101,7 +101,7 @@ const games = ref([0, 1, 2, 3, 4, 5])
       </a>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">
@@ -132,7 +132,7 @@ const games = ref([0, 1, 2, 3, 4, 5])
       <div class="py-2 pl-4 font-medium">7/5/2567</div>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">
@@ -160,7 +160,7 @@ const games = ref([0, 1, 2, 3, 4, 5])
       </a>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">
@@ -188,7 +188,7 @@ const games = ref([0, 1, 2, 3, 4, 5])
       </a>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">

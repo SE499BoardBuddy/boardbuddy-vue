@@ -137,7 +137,7 @@ async function addItem() {
       <div class="mt-4 sm:flex sm:items-end sm:justify-end">
         <button
           @click.prevent.stop="showModal"
-          class="block px-5 py-3 text-xs font-bold text-center uppercase transition duration-300 rounded-lg text-bb-white bg-bb-red hover:bg-bb-orange"
+          class="block px-5 py-3 text-xs font-bold text-center uppercase transition duration-300 rounded-lg text-bb-white bg-bb-red hover:bg-bb-orange active:bg-bb-maroon"
         >
           Add to collection
         </button>

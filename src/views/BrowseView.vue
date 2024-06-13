@@ -68,7 +68,7 @@ onBeforeRouteUpdate(() => {
 <template>
   <headerVue></headerVue>
   <div
-    class="text-2xl font-semibold text-bb-white h-[12%] z-10 px-4 bg-bb-black fixed lg:px-12 w-full lg:top-0 top-[8vh] lg:w-[68%] lg:left-[16%] flex flex-row"
+    class="text-2xl font-semibold text-bb-white h-[12%] z-1-header px-4 bg-bb-black fixed lg:px-12 w-full lg:top-0 top-[8vh] lg:w-[68%] lg:left-[16%] flex flex-row"
   >
     <p
       class="my-auto hidden lg:flex md:flex text-2xl w-[20%] font-semibold leading-none text-left h-fit text-bb-white"
@@ -110,7 +110,7 @@ onBeforeRouteUpdate(() => {
         />
         <button
           type="submit"
-          class="absolute bottom-0 h-full p-2 text-sm font-medium transition duration-300 ease-in-out rounded-tr-lg rounded-br-lg bg-bb-red end-0 hover:bg-bb-orange"
+          class="absolute bottom-0 h-full p-2 text-sm font-medium transition duration-300 ease-in-out rounded-tr-lg rounded-br-lg bg-bb-red end-0 hover:bg-bb-orange active:bg-bb-maroon"
         >
           Search
         </button>
@@ -128,9 +128,9 @@ onBeforeRouteUpdate(() => {
           :to="{ name: 'product', params: { id: item.id } }"
           v-for="item in searched_item"
           :key="item.name"
-          class="px-2 pt-2 pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-90 hover:scale-105"
+          class="px-2 pt-2 pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-95 hover:scale-105"
         >
-          <div class="flex flex-row h-[6rem] md:h-[16rem] lg:h-[9rem] mb-2">
+          <div class="flex flex-row h-[6rem] md:h-[16rem] lg:h-[10rem] mb-2">
             <div class="w-full">
               <img
                 :src="item.image"

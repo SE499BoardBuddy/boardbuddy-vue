@@ -27,7 +27,7 @@ const isUploaded = ref(true)
       Chat with BoardBuddy
     </p>
     <button
-      class="flex flex-col justify-center h-[60%] group px-2 rounded-lg my-auto transition duration-300 active:scale-90 hover:bg-bb-black-light"
+      class="flex flex-col justify-center h-[60%] group px-2 rounded-lg my-auto transition duration-300 active:scale-95 hover:bg-bb-black-light active:bg-bb-black"
     >
       <div class="flex flex-row">
         <svg
@@ -170,7 +170,7 @@ const isUploaded = ref(true)
       class="w-full px-3 py-2 border rounded-l-lg resize-none border-bb-black focus:outline-none focus:ring-2 focus:ring-bb-red bg-bb-black-light"
     />
     <button
-      class="w-auto h-auto p-4 transition duration-300 rounded-r-lg bg-bb-red hover:bg-bb-orange"
+      class="w-auto h-auto p-4 transition duration-300 rounded-r-lg bg-bb-red hover:bg-bb-orange active:bg-bb-maroon"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +198,7 @@ const isUploaded = ref(true)
       <div class="py-2 pl-4 font-medium">7/5/2567</div>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">
@@ -226,7 +226,7 @@ const isUploaded = ref(true)
       </a>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">
@@ -254,7 +254,7 @@ const isUploaded = ref(true)
       </a>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">
@@ -285,7 +285,7 @@ const isUploaded = ref(true)
       <div class="py-2 pl-4 font-medium">7/5/2567</div>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">
@@ -313,7 +313,7 @@ const isUploaded = ref(true)
       </a>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">
@@ -341,7 +341,7 @@ const isUploaded = ref(true)
       </a>
       <a
         href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-90 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
+        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
         <div class="flex flex-row">
           <div class="truncate">

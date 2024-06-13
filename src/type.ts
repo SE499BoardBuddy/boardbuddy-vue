@@ -23,7 +23,8 @@ export interface Collection {
 export interface CollectionItems {
     bg_id: number,
     image: string,
-    name: string
+    name: string,
+    public_id: string
 }
 
 export interface Boardgame {
