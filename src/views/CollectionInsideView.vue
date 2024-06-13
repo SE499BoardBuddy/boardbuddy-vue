@@ -5,14 +5,17 @@ import { storeToRefs } from 'pinia'
 import { userBGStore } from '@/stores/boardgame'
 import { ref } from 'vue'
 
-import ModalPopup from '@/components/ModalPopup.vue'
+import ConfirmModalDialog from '@/components/ConfirmModalDialog.vue'
 
 import ContextMenu from '@/components/ContextMenu.vue'
 import { onClickOutside } from '@vueuse/core'
 import CollectionService from '@/services/CollectionService'
 import router from '@/router'
 
-const isModalShown = ref(false)
+import Menu from 'primevue/menu'
+import Button from 'primevue/button'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 
 const items = storeToRefs(userBGStore()).current_items
 
@@ -48,9 +51,66 @@ onClickOutside(target, () => {
   isMenuShown.value = false
 })
 //End of Context Menu
+
+const menu = ref()
+const menuItems = ref([
+  {
+    label: 'Delete collection',
+    icon: 'pi pi-trash',
+    command: () => {
+      confirmDelete()
+    }
+  }
+])
+
+const toggle = (event: any) => {
+  menu.value.toggle(event)
+}
+
+const confirm = useConfirm()
+const confirmDelete = () => {
+  confirm.require({
+    group: 'headless',
+    message: 'Do you want to delete this collection?',
+    header: 'Delete ' + items.value?.name,
+    icon: 'pi pi-info-circle',
+    rejectLabel: 'Cancel',
+    rejectProps: {
+      label: 'Cancel',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Delete',
+      severity: 'danger'
+    },
+    accept: () => {
+      if (items.value != null) {
+        CollectionService.deleteCollection(items.value.public_id).then(() => {
+          router.push({ name: 'collection' })
+        })
+      }
+    },
+    reject: () => {},
+    position: 'topleft'
+  })
+}
 </script>
 <template>
   <headerVue></headerVue>
+  <ConfirmDialog group="headless">
+    <template #container="{ message, acceptCallback, rejectCallback }">
+      <ConfirmModalDialog
+        @accept-callback="acceptCallback"
+        @reject-callback="rejectCallback"
+        :header="message.header"
+      >
+        <template v-slot:content>
+          <p>{{ message.message }}</p>
+        </template>
+      </ConfirmModalDialog>
+    </template>
+  </ConfirmDialog>
   <ContextMenu
     ref="target"
     :isMenuShown="isMenuShown"
@@ -59,31 +119,6 @@ onClickOutside(target, () => {
     :x="menuX"
     :y="menuY"
   />
-  <ModalPopup
-    v-model:visible="isModalShown"
-    header="New Collection"
-    @submit="console.log('submit')"
-  >
-    <template v-slot:content>
-      <label
-        for="collectionName"
-        class="relative block pt-3 overflow-hidden bg-transparent border-b border-bb-maroon text-bb-white"
-      >
-        <input
-          type="text"
-          id="collectionName"
-          placeholder="New collection"
-          class="w-full h-8 p-0 placeholder-transparent bg-transparent border-none peer focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
-        />
-
-        <span
-          class="absolute text-xs transition-all -translate-y-1/2 start-0 top-2 text-bb-red peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:text-xs"
-        >
-          Name
-        </span>
-      </label>
-    </template>
-  </ModalPopup>
 
   <div
     class="min-w-screen min-h-screen bg-bb-black lg:px-[16%] text-bb-white overflow-hidden pt-8 lg:pt-4"
@@ -93,12 +128,40 @@ onClickOutside(target, () => {
     >
       <div class="flex flex-row justify-between w-full h-full border-b-2 border-bb-black-light">
         <p
-          class="w-full my-auto text-2xl font-semibold leading-none text-left h-fit text-bb-white lg:w-auto"
+          class="w-[95%] my-auto text-2xl font-semibold leading-none text-left h-fit text-bb-white lg:w-auto"
         >
           {{ items?.name }}
         </p>
+        <div class="w-[5%] flex items-center">
+          <Button
+            class="w-10 h-10 mx-auto transition duration-300 rounded-full group hover:bg-bb-black-light bg-bb-black text-bb-white"
+            type="button"
+            @click="toggle"
+            aria-haspopup="true"
+            aria-controls="overlay_menu"
+          >
+            <span
+              class="pi pi-ellipsis-v text-[1.5rem] text-bb-white/80 group-hover:text-bb-white/100"
+            ></span>
+          </Button>
+        </div>
+        <Menu
+          class="shadow-[0_0_4px_4px_rgba(0,0,0,0.15)] w-fit absolute right-12 font-normal text-base py-2 rounded-lg border-[#6b4a78] bg-bb-black-light text-bb-white min-w-[200px]"
+          ref="menu"
+          id="overlay_menu"
+          :model="menuItems"
+          :popup="true"
+        >
+          <template #item="{ item }">
+            <a class="hover:bg-[#5f426c] group py-2 px-4 cursor-pointer flex items-center gap-4">
+              <span :class="item.icon" class="group-hover:text-bb-white/100 text-bb-white/80" />
+              <span>{{ item.label }}</span>
+            </a>
+          </template>
+        </Menu>
       </div>
     </div>
+
     <div class="w-full h-full mx-auto py-8 md:pb-16 px-2 lg:w-[90%]">
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
         <RouterLink

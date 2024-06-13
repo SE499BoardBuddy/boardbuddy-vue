@@ -17,6 +17,7 @@ export interface UserCollection {
 
 export interface Collection {
     name: string,
+    public_id: string,
     items: CollectionItems[]
 }
 
