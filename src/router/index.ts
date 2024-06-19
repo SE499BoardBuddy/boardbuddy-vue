@@ -30,32 +30,31 @@ const router = createRouter({
       },
     },
     {
-      path: '/browse',
+      path: '/search',
       name: 'browse',
       component: BrowseView,
       meta: {
         requiresAuth: false
       },
       beforeEnter: async (to) => {
+        let query = to.query.query as string
+        let page = to.query.page as string
+
+        if (typeof query != 'string' || query.length == 0) {
+          query = ''
+        }
+        if (typeof page != 'string' || page.length == 0) {
+          page = '1'
+        }
+
+        // console.log('query', query)
+        // console.log('page', page)
+
         const bgStore = userBGStore()
         NProgress.set(0.7)
-        await IRService.search('').then((response) => {
+        await IRService.search(query, parseInt(page)).then((response) => {
           bgStore.setCurrentResponse(response.data)
-        })
-      }
-    },
-    {
-      path: '/search/:',
-      name: 'browse',
-      component: BrowseView,
-      meta: {
-        requiresAuth: false
-      },
-      beforeEnter: async (to) => {
-        const bgStore = userBGStore()
-        NProgress.set(0.7)
-        await IRService.search('').then((response) => {
-          bgStore.setCurrentResponse(response.data)
+          bgStore.setCurrentSearchResults(response.data.results)
         })
       }
     },
@@ -191,7 +190,10 @@ const router = createRouter({
         requiresAuth: false
       },
     },
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 }
+  }
 })
 
 const isLoggedIn = () => {
@@ -200,7 +202,7 @@ const isLoggedIn = () => {
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start()
-  console.log(isLoggedIn())
+  // console.log(isLoggedIn())
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!isLoggedIn()) {
       next({ name: 'signin' })

@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import navBarVue from '@/components/NavBar.vue'
 import headerVue from '@/components/HeaderBar.vue'
-import { onBeforeUpdate, ref } from 'vue'
-import { onBeforeRouteUpdate, RouterLink } from 'vue-router'
+import { ref } from 'vue'
+import { onBeforeRouteUpdate, RouterLink, useRoute, useRouter } from 'vue-router'
 import { userBGStore } from '@/stores/boardgame'
 import IRService from '@/services/IRService'
-import router from '@/router'
 import type { Boardgame } from '@/type'
-const colList = ref<number[]>([])
-for (var i = 1; i <= 30; i++) {
-  colList.value.push(i)
-}
+
+import PaginationCustom from '@/components/PaginationCustom.vue'
+import { storeToRefs } from 'pinia'
+
 const filterList = ref([
   'Release date',
   'Designer',
@@ -22,44 +21,79 @@ const filterList = ref([
 ])
 
 const query_term = ref('')
-const searched_item = ref<Array<Boardgame>>([])
 const bgStore = userBGStore()
+const res = storeToRefs(bgStore).res
+const totalItems = ref(1000)
+const searched_item = storeToRefs(bgStore).current_search_results
+
+const route = useRoute()
+const router = useRouter()
+const current_page = ref(1)
+
+const paginationRefUp = ref<InstanceType<typeof PaginationCustom> | null>(null)
+const paginationRefDown = ref<InstanceType<typeof PaginationCustom> | null>(null)
 
 async function search(query: string) {
-  // console.log(query_term.value)
-  await IRService.search(query).then((response) => {
+  current_page.value = 1
+  await IRService.search(query, 1).then((response) => {
     console.log('search')
+    router.replace({
+      name: 'browse',
+      query: {
+        query: query,
+        page: 1
+      }
+    })
     bgStore.setCurrentResponse(response.data)
-    console.log(bgStore.res)
+    bgStore.setCurrentSearchResults(response.data.results)
     setTerm()
-    // router.go(0)
+    console.log('search finish')
   })
 }
 
 function setTerm() {
-  // needSuggestion.value = false
-  if (bgStore.res != null && bgStore.res.suggest != null) {
-    // console.log(recipeStore.res.suggest.Name)
-    // var text = ''
-    // recipeStore.res.suggest.Name.forEach((element) => {
-    //   if (element.options != null && element.options.length != 0) {
-    //     console.log(element.options[0].text)
-    //     text = text + ' ' + element.options[0].text
-    //     needSuggestion.value = true
-    //   } else {
-    //     text = text + ' ' + element.text
-    //   }
-    // })
-    // suggested_term.value = text.trim()
-    // console.log('suggested_term: ' + suggested_term.value)
-    if (bgStore.res.results != null) {
-      searched_item.value = bgStore.res.results
-    }
-    console.log(searched_item.value)
+  if (bgStore.res != null) {
+    totalItems.value = bgStore.res.total_hit
+    paginationRefUp.value?.getTotalPages()
+    paginationRefDown.value?.getTotalPages()
+    // console.log('setTerm', totalItems.value)
+  }
+  // console.log('setTerm', current_page.value)
+}
+
+async function goToPage(page: any) {
+  await IRService.search(query_term.value, page).then((response) => {
+    current_page.value = page
+    router.replace({
+      name: 'browse',
+      query: {
+        query: query_term.value,
+        page: page
+      }
+    })
+    // console.log('then', current_page.value)
+    bgStore.setCurrentResponse(response.data)
+    bgStore.setCurrentSearchResults(response.data.results)
+    setTerm()
+  })
+  // console.log('after', current_page.value)
+}
+
+function setQuery() {
+  if (route.query.query != null) {
+    query_term.value = route.query.query as string
+  } else {
+    query_term.value = ''
+  }
+  if (route.query.page != undefined) {
+    current_page.value = parseInt(route.query.page as string)
+  } else {
+    current_page.value = 1
   }
 }
 
 setTerm()
+setQuery()
 
 onBeforeRouteUpdate(() => {
   setTerm()
@@ -106,7 +140,6 @@ onBeforeRouteUpdate(() => {
           id="default-search"
           class="block w-full h-full px-4 py-2 text-sm border rounded-lg border-bb-black-light ps-10 bg-bb-black focus:ring-bb-red focus:border-bb-red"
           placeholder="Type here..."
-          required
         />
         <button
           type="submit"
@@ -120,14 +153,23 @@ onBeforeRouteUpdate(() => {
   </div>
 
   <div
-    class="min-w-screen min-h-screen bg-bb-black px-2 pt-[16vh] lg:pt-[12vh] lg:pb-[15vh] lg:px-[16%] text-bb-white overflow-hidden"
+    class="min-w-screen min-h-screen bg-bb-black px-2 pt-[16vh] lg:pt-[12vh] lg:px-[16%] text-bb-white overflow-hidden"
   >
     <div class="w-full h-full mx-auto py-8 lg:w-[90%]">
+      <div class="flex flex-row justify-center w-full mb-8">
+        <PaginationCustom
+          ref="paginationRefUp"
+          @page-changed="goToPage"
+          :page="current_page"
+          :size="32"
+          :total="totalItems"
+        ></PaginationCustom>
+      </div>
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <RouterLink
           :to="{ name: 'product', params: { id: item.id } }"
           v-for="item in searched_item"
-          :key="item.name"
+          :key="item.id"
           class="px-2 pt-2 pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-95 hover:scale-105"
         >
           <div class="flex flex-row h-[6rem] md:h-[16rem] lg:h-[10rem] mb-2">
@@ -140,6 +182,15 @@ onBeforeRouteUpdate(() => {
           </div>
           <p class="text-lg font-medium truncate">{{ item.name }}</p>
         </RouterLink>
+      </div>
+      <div class="flex flex-row justify-center w-full mt-8">
+        <PaginationCustom
+          ref="paginationRefDown"
+          @page-changed="goToPage"
+          :page="current_page"
+          :size="32"
+          :total="totalItems"
+        ></PaginationCustom>
       </div>
     </div>
   </div>

@@ -4,6 +4,7 @@ export const userBGStore = defineStore('boardgame', {
     state: () => ({
         current_boardgame: null as Boardgame | null,
         res: null as ResponseObjectIr | null,
+        current_search_results: null as Boardgame[] | null,
         current_collections: null as UserCollection[] | null,
         current_collections_to_add: null as UserCollection[] | null,
         current_collection_name: '' as string,
@@ -15,6 +16,9 @@ export const userBGStore = defineStore('boardgame', {
         },
         setCurrentBoardgame(boardgame: Boardgame) {
             this.current_boardgame = boardgame
+        },
+        setCurrentSearchResults(current_search_results: Boardgame[]) {
+            this.current_search_results = current_search_results
         },
         setCurrentCollections(collections: UserCollection[]) {
             this.current_collections = collections
