@@ -5,37 +5,25 @@ import { ref } from 'vue'
 import { onBeforeRouteUpdate, RouterLink, useRoute, useRouter } from 'vue-router'
 import { userBGStore } from '@/stores/boardgame'
 import IRService from '@/services/IRService'
-import type { Boardgame } from '@/type'
 
 import PaginationCustom from '@/components/PaginationCustom.vue'
 import { storeToRefs } from 'pinia'
 
-const filterList = ref([
-  'Release date',
-  'Designer',
-  'Publisher',
-  'Minimum age',
-  'Playing time',
-  'Player count',
-  'Rating score'
-])
-
-const query_term = ref('')
+const queryTerm = ref('')
 const bgStore = userBGStore()
-const res = storeToRefs(bgStore).res
 const totalItems = ref(1000)
-const searched_item = storeToRefs(bgStore).current_search_results
+const searchedItems = storeToRefs(bgStore).current_search_results
 
 const route = useRoute()
 const router = useRouter()
-const current_page = ref(1)
+const currentPage = ref(1)
 
 const paginationRefUp = ref<InstanceType<typeof PaginationCustom> | null>(null)
 const paginationRefDown = ref<InstanceType<typeof PaginationCustom> | null>(null)
 
 async function search(query: string) {
-  current_page.value = 1
-  await IRService.search(query, 1).then((response) => {
+  currentPage.value = 1
+  await IRService.search(query, 1, 0, 0, 0, 0, 0, 0, 0, '', '', '').then((response) => {
     console.log('search')
     router.replace({
       name: 'browse',
@@ -51,44 +39,130 @@ async function search(query: string) {
   })
 }
 
+async function filter() {
+  currentPage.value = 1
+  await IRService.search(
+    queryTerm.value,
+    1,
+    filterMinAge.value,
+    filterMinPlayers.value,
+    filterMaxPlayers.value,
+    filterMinPlaytime.value,
+    filterMaxPlaytime.value,
+    filterMinYear.value,
+    filterMaxYear.value,
+    filterDesigner.value,
+    filterPublisher.value,
+    filterCategory.value.value
+  ).then((response) => {
+    console.log('search')
+    router.replace({
+      name: 'browse',
+      query: {
+        query: queryTerm.value,
+        page: 1
+      }
+    })
+    bgStore.setCurrentResponse(response.data)
+    bgStore.setCurrentSearchResults(response.data.results)
+    setTerm()
+    console.log('filter finish')
+  })
+}
+
 function setTerm() {
   if (bgStore.res != null) {
     totalItems.value = bgStore.res.total_hit
     paginationRefUp.value?.getTotalPages()
     paginationRefDown.value?.getTotalPages()
     // console.log('setTerm', totalItems.value)
+
+    let cate_list = bgStore.res.categories
+    if (cate_list != null && cate_list != undefined && cate_list.length != 0) {
+      categoriesList.value = []
+      for (let i = 0; i < cate_list.length; i++) {
+        categoriesList.value.push({
+          name: cate_list[i],
+          id: i,
+          value: cate_list[i]
+        })
+      }
+    }
   }
-  // console.log('setTerm', current_page.value)
+  // console.log('setTerm', currentPage.value)
 }
 
 async function goToPage(page: any) {
-  await IRService.search(query_term.value, page).then((response) => {
-    current_page.value = page
+  await IRService.search(
+    queryTerm.value,
+    page,
+    filterMinAge.value,
+    filterMinPlayers.value,
+    filterMaxPlayers.value,
+    filterMinPlaytime.value,
+    filterMaxPlaytime.value,
+    filterMinYear.value,
+    filterMaxYear.value,
+    filterDesigner.value,
+    filterPublisher.value,
+    filterCategory.value.value
+  ).then((response) => {
+    currentPage.value = page
     router.replace({
       name: 'browse',
       query: {
-        query: query_term.value,
+        query: queryTerm.value,
         page: page
       }
     })
-    // console.log('then', current_page.value)
+    // console.log('then', currentPage.value)
     bgStore.setCurrentResponse(response.data)
     bgStore.setCurrentSearchResults(response.data.results)
     setTerm()
   })
-  // console.log('after', current_page.value)
+  // console.log('after', currentPage.value)
 }
 
 function setQuery() {
   if (route.query.query != null) {
-    query_term.value = route.query.query as string
+    queryTerm.value = route.query.query as string
   } else {
-    query_term.value = ''
+    queryTerm.value = ''
   }
   if (route.query.page != undefined) {
-    current_page.value = parseInt(route.query.page as string)
+    currentPage.value = parseInt(route.query.page as string)
   } else {
-    current_page.value = 1
+    currentPage.value = 1
+  }
+}
+
+const categoriesList = ref([
+  {
+    name: 'test1',
+    id: 1,
+    value: ''
+  }
+])
+const filterCategory = ref({
+  name: 'test1',
+  id: 1,
+  value: ''
+})
+const filterMinPlaytime = ref(0)
+const filterMaxPlaytime = ref(0)
+const filterMinPlayers = ref(0)
+const filterMaxPlayers = ref(0)
+const filterMinYear = ref(0)
+const filterMaxYear = ref(0)
+const filterMinAge = ref(0)
+const filterDesigner = ref('')
+const filterPublisher = ref('')
+
+function clearCategory() {
+  filterCategory.value = {
+    name: 'test1',
+    id: 1,
+    value: ''
   }
 }
 
@@ -111,7 +185,7 @@ onBeforeRouteUpdate(() => {
     </p>
     <form
       class="lg:w-[60%] w-full leading-normal h-fit my-auto text-bb-white mx-auto"
-      @submit.prevent="search(query_term)"
+      @submit.prevent="search(queryTerm)"
     >
       <label for="default-search" class="mb-2 text-sm font-medium sr-only text-bb-white"
         >Search</label
@@ -135,7 +209,7 @@ onBeforeRouteUpdate(() => {
           </svg>
         </div>
         <input
-          v-model="query_term"
+          v-model="queryTerm"
           type="search"
           id="default-search"
           class="block w-full h-full px-4 py-2 text-sm border rounded-lg border-bb-black-light ps-10 bg-bb-black focus:ring-bb-red focus:border-bb-red"
@@ -160,7 +234,7 @@ onBeforeRouteUpdate(() => {
         <PaginationCustom
           ref="paginationRefUp"
           @page-changed="goToPage"
-          :page="current_page"
+          :page="currentPage"
           :size="32"
           :total="totalItems"
         ></PaginationCustom>
@@ -168,7 +242,7 @@ onBeforeRouteUpdate(() => {
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <RouterLink
           :to="{ name: 'product', params: { id: item.id } }"
-          v-for="item in searched_item"
+          v-for="item in searchedItems"
           :key="item.id"
           class="px-2 pt-2 pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-95 hover:scale-105"
         >
@@ -187,7 +261,7 @@ onBeforeRouteUpdate(() => {
         <PaginationCustom
           ref="paginationRefDown"
           @page-changed="goToPage"
-          :page="current_page"
+          :page="currentPage"
           :size="32"
           :total="totalItems"
         ></PaginationCustom>
@@ -195,20 +269,135 @@ onBeforeRouteUpdate(() => {
     </div>
   </div>
   <div
-    class="fixed top-0 right-0 h-full w-[16%] hidden bg-bb-black border-l-2 pr-2 border-bb-black-light text-bb-white lg:flex flex-col"
+    class="fixed top-0 right-0 h-full w-[16%] hidden overflow-y-auto bg-bb-black border-l-2 pr-2 border-bb-black-light text-bb-white lg:flex flex-col"
   >
-    <div class="w-full pl-4 h-[12%] text-lg font-medium flex flex-col justify-center">Filters</div>
-    <div class="flex flex-col" v-for="filter in filterList" :key="filter">
-      <div class="py-2 pl-4 text-base font-medium">{{ filter }}</div>
-      <div class="pl-6">
-        <input
-          class="px-2 border-2 rounded-lg bg-bb-black border-bb-black-light"
-          type="text"
-          name=""
-          id=""
-        />
+    <form @submit.prevent="filter">
+      <div
+        class="w-full px-4 h-[12%] text-lg font-medium items-center justify-between flex flex-row"
+      >
+        <span>Filters</span>
+        <button
+          type="submit"
+          class="px-4 py-2 text-sm font-medium transition duration-300 ease-in-out rounded-lg h-fit bg-bb-red end-0 hover:bg-bb-orange active:bg-bb-maroon"
+        >
+          Filter
+        </button>
       </div>
-    </div>
+
+      <div class="flex flex-col w-full mb-2">
+        <div class="py-2 pl-4 text-base font-medium">Play Time</div>
+        <div class="flex flex-row w-full gap-1 pl-6">
+          <input
+            min="0"
+            v-model="filterMinPlaytime"
+            class="w-2/5 px-2 border-2 rounded-lg bg-bb-black border-bb-black-light"
+            type="number"
+          />
+          <span>to</span>
+          <input
+            min="0"
+            v-model="filterMaxPlaytime"
+            class="w-2/5 px-2 border-2 rounded-lg bg-bb-black border-bb-black-light"
+            type="number"
+          />
+        </div>
+      </div>
+      <div class="flex flex-col w-full mb-2">
+        <div class="py-2 pl-4 text-base font-medium">Player Count</div>
+        <div class="flex flex-row w-full gap-1 pl-6">
+          <input
+            min="0"
+            v-model="filterMinPlayers"
+            class="w-2/5 px-2 border-2 rounded-lg bg-bb-black border-bb-black-light"
+            type="number"
+          />
+          <span>to</span>
+          <input
+            min="0"
+            v-model="filterMaxPlayers"
+            class="w-2/5 px-2 border-2 rounded-lg bg-bb-black border-bb-black-light"
+            type="number"
+          />
+        </div>
+      </div>
+      <div class="flex flex-col w-full mb-2">
+        <div class="py-2 pl-4 text-base font-medium">Year Released</div>
+        <div class="flex flex-row w-full gap-1 pl-6">
+          <input
+            min="0"
+            v-model="filterMinYear"
+            class="w-2/5 px-2 border-2 rounded-lg bg-bb-black border-bb-black-light"
+            type="number"
+          />
+          <span>to</span>
+          <input
+            min="0"
+            v-model="filterMaxYear"
+            class="w-2/5 px-2 border-2 rounded-lg bg-bb-black border-bb-black-light"
+            type="number"
+          />
+        </div>
+      </div>
+      <div class="flex flex-col w-full mb-2">
+        <div class="py-2 pl-4 text-base font-medium">Minimum age</div>
+        <div class="flex flex-row w-full gap-1 pl-6">
+          <input
+            min="0"
+            v-model="filterMinAge"
+            class="px-2 border-2 rounded-lg bg-bb-black border-bb-black-light"
+            type="number"
+          />
+        </div>
+      </div>
+      <div class="flex flex-col w-full mb-2">
+        <div class="py-2 pl-4 text-base font-medium">Designer</div>
+        <div class="flex flex-row w-full gap-1 pl-6">
+          <input
+            v-model="filterDesigner"
+            class="px-2 border-2 rounded-lg bg-bb-black border-bb-black-light"
+            type="text"
+          />
+        </div>
+      </div>
+      <div class="flex flex-col w-full mb-2">
+        <div class="py-2 pl-4 text-base font-medium">Publisher</div>
+        <div class="flex flex-row w-full gap-1 pl-6">
+          <input
+            v-model="filterPublisher"
+            class="px-2 border-2 rounded-lg bg-bb-black border-bb-black-light"
+            type="text"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col w-full pb-4">
+        <div class="flex flex-row items-center justify-between px-4 py-2 text-base font-medium">
+          <span>Categories</span>
+          <button
+            @click.prevent="clearCategory"
+            class="px-4 py-2 text-sm font-medium transition duration-300 ease-in-out rounded-lg h-fit bg-bb-red end-0 hover:bg-bb-orange active:bg-bb-maroon"
+          >
+            Clear
+          </button>
+        </div>
+        <div class="flex flex-col pl-6 overflow-y-auto h-[12rem]">
+          <div v-for="col in categoriesList" :key="col.id" class="flex items-center gap-2 p-1">
+            <label :for="col.id + col.name" class="flex items-center gap-4 cursor-pointer">
+              <input
+                class="box-content h-2 w-2 cursor-pointer appearance-none ring-bb-white rounded-full border-[5px] border-bb-black bg-bb-black bg-clip-padding outline-none ring-2 checked:ring-bb-red checked:bg-bb-red transition duration-75"
+                type="radio"
+                :id="col.id + col.name"
+                :value="col"
+                v-model="filterCategory"
+              />
+              <div class="flex flex-col justify-center text-left text-bb-white">
+                <span>{{ col.name }}</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
   <navBarVue></navBarVue>
 </template>

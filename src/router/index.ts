@@ -52,7 +52,7 @@ const router = createRouter({
 
         const bgStore = userBGStore()
         NProgress.set(0.7)
-        await IRService.search(query, parseInt(page)).then((response) => {
+        await IRService.search(query, parseInt(page), 0, 0, 0, 0, 0, 0, 0, '', '', '').then((response) => {
           bgStore.setCurrentResponse(response.data)
           bgStore.setCurrentSearchResults(response.data.results)
         })

@@ -51,6 +51,7 @@ export interface Boardgame {
 }
 
 export interface ResponseObjectIr {
+    categories: string[],
     results: Boardgame[],
     total_hit: number,
     suggest: {
