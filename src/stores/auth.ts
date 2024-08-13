@@ -128,13 +128,15 @@ export const useAuthStore = defineStore('auth', {
                     password: password
                 })
                 .then((response) => {
-                    this.token = response.data.access_token
-                    this.user = response.data.user
-                    this.login_state = true
-                    localStorage.setItem('access_token', this.token as string)
-                    localStorage.setItem('user', JSON.stringify(this.user))
-                    axios.defaults.headers.common['x-access-token'] = `${this.token}`
-                    console.log(response)
+                    if (response.status == 201) {
+                        this.token = response.data.access_token
+                        this.user = response.data.user
+                        this.login_state = true
+                        localStorage.setItem('access_token', this.token as string)
+                        localStorage.setItem('user', JSON.stringify(this.user))
+                        axios.defaults.headers.common['x-access-token'] = `${this.token}`
+                        console.log(response)
+                    }
                     return response
                 })
         },
@@ -146,13 +148,15 @@ export const useAuthStore = defineStore('auth', {
                     username: username
                 })
                 .then((response) => {
-                    this.token = response.data.access_token
-                    this.user = response.data.user
-                    this.login_state = true
-                    localStorage.setItem('access_token', this.token as string)
-                    localStorage.setItem('user', JSON.stringify(this.user))
-                    axios.defaults.headers.common['x-access-token'] = `${this.token}`
-                    console.log(response)
+                    if (response.status == 201) {
+                        this.token = response.data.access_token
+                        this.user = response.data.user
+                        this.login_state = true
+                        localStorage.setItem('access_token', this.token as string)
+                        localStorage.setItem('user', JSON.stringify(this.user))
+                        axios.defaults.headers.common['x-access-token'] = `${this.token}`
+                        console.log(response)
+                    }
                     return response
 
                 })

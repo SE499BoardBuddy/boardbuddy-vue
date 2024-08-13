@@ -339,7 +339,7 @@ onBeforeRouteUpdate(() => {
         </div>
       </div>
       <div class="flex flex-col w-full mb-2">
-        <div class="py-2 pl-4 text-base font-medium">Minimum age</div>
+        <div class="py-2 pl-4 text-base font-medium">Minimum Age</div>
         <div class="flex flex-row w-full gap-1 pl-6">
           <input
             min="0"

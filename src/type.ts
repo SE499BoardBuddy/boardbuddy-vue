@@ -19,6 +19,12 @@ export interface Collection {
     name: string,
     public_id: string,
     items: CollectionItems[]
+    recommendation: {
+        _id: string,
+        bg_id: number,
+        image: string,
+        name: string
+    }[]
 }
 
 export interface CollectionItems {
@@ -47,7 +53,16 @@ export interface Boardgame {
     playing_time: number,
     thumbnail: string
     videogame_bg: string,
-    year_published: number
+    year_published: number,
+    recommendation: BoardgameES[]
+}
+
+export interface BoardgameES {
+    _source: {
+        id: number,
+        image: string,
+        name: string,
+    }
 }
 
 export interface ResponseObjectIr {

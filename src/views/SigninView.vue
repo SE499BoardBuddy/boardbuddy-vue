@@ -11,12 +11,15 @@ const password = ref('')
 
 function login() {
   authStore.login(email.value, password.value).then(
-    (resolve) => {
-      console.log(resolve)
-      if (authStore.user !== null && authStore.user.roles == 'ROLE_ADMIN') {
-        router.push({ name: 'admin' })
+    (response) => {
+      if (response.status != 201) {
+        alert(response.data.message)
       } else {
-        router.push({ name: 'home' })
+        if (authStore.user !== null && authStore.user.roles == 'ROLE_ADMIN') {
+          router.push({ name: 'admin' })
+        } else {
+          router.push({ name: 'home' })
+        }
       }
     }
     // (reject) => {
@@ -45,6 +48,7 @@ function login() {
           <div class="relative">
             <input
               v-model="email"
+              required
               type="email"
               class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"
               placeholder="Enter email"
@@ -74,6 +78,7 @@ function login() {
 
           <div class="relative">
             <input
+              required
               v-model="password"
               type="password"
               class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"

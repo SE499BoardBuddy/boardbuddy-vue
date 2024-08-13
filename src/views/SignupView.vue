@@ -12,9 +12,12 @@ const password = ref('')
 
 function register() {
   authStore.register(email.value, username.value, password.value).then(
-    () => {
-      // console.log(authStore.mock)
-      router.push({ name: 'home' })
+    (res) => {
+      if (res.status != 201) {
+        alert(res.data.message)
+      } else {
+        router.push({ name: 'home' })
+      }
     }
     // (reject) => {
     //   console.log(reject)
@@ -44,6 +47,7 @@ function register() {
           <div class="relative">
             <input
               v-model="email"
+              required
               type="email"
               class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"
               placeholder="Enter email"
@@ -74,6 +78,7 @@ function register() {
           <div class="relative">
             <input
               v-model="username"
+              required
               type="username"
               class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"
               placeholder="Enter username"
@@ -110,6 +115,7 @@ function register() {
           <div class="relative">
             <input
               v-model="password"
+              required
               type="password"
               class="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12 text-bb-black"
               placeholder="Enter password"

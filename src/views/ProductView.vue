@@ -12,6 +12,7 @@ import router from '@/router'
 import CollectionService from '@/services/CollectionService'
 
 import NProgress from 'nprogress'
+import { onBeforeRouteUpdate } from 'vue-router'
 
 const bgStore = userBGStore()
 const authStore = useAuthStore()
@@ -51,6 +52,34 @@ async function addItem() {
     }
   }
 }
+
+onBeforeRouteUpdate(async (to) => {
+  const id: string = to.params.id as string
+  NProgress.set(0.5)
+  await CollectionService.getBoardgame(id)
+    .then((response) => {
+      bgStore.setCurrentBoardgame(response.data)
+    })
+    .catch((error) => {
+      if (error.response && error.response.status === 404) {
+        router.push({ name: 'browse' })
+      }
+    })
+
+  if (
+    localStorage.getItem('access_token') &&
+    localStorage.getItem('user') &&
+    authStore.user != null
+  ) {
+    console.log(authStore.user.public_id)
+    NProgress.set(0.7)
+    await CollectionService.getCollectionToAdd(authStore.user.public_id, id).then((response) => {
+      console.log(response.data)
+      bgStore.setCurrentCollectionsToAdd(response.data.collections)
+    })
+  }
+  console.log('onBeforeRouteUpdate')
+})
 </script>
 <template class="bg-bb-black">
   <headerVue></headerVue>
@@ -84,29 +113,55 @@ async function addItem() {
       </div>
     </template>
   </ModalPopup>
-  <article class="flex bg-bb-black transition lg:pl-[16%] h-full py-[13vh]">
+  <article
+    class="flex flex-col bg-bb-black transition lg:pl-[16%] h-full py-[13vh] lg:pb-[13vh] lg:pt-[4vh]"
+  >
     <div class="flex flex-col justify-between mx-auto w-[80%]">
-      <div class="hidden sm:block sm:shrink-0">
-        <img alt="" :src="item?.image" class="object-cover w-full rounded-lg h-96" />
+      <div
+        class="text-2xl font-semibold text-bb-white h-[16vh] md:h-[12vh] justify-between bg-bb-black w-full"
+      >
+        <div class="flex flex-col items-center justify-between w-full h-full gap-4 md:flex-row">
+          <p
+            class="w-full my-auto text-2xl font-semibold leading-none text-center md:text-left h-fit text-bb-white lg:w-auto"
+          >
+            {{ item?.name }} ({{ item?.year_published }})
+          </p>
+          <button
+            @click.prevent.stop="showModal"
+            class="block h-[55%] px-5 lg:py-3 py-1 text-xs font-bold text-center uppercase transition duration-300 rounded-lg text-bb-white bg-bb-red hover:bg-bb-orange active:bg-bb-maroon"
+          >
+            Add to collection
+          </button>
+        </div>
+      </div>
+      <div class="block mt-4 md:mt-2 sm:shrink-0">
+        <img alt="" :src="item?.image" class="object-cover object-top w-full rounded-lg h-96" />
       </div>
 
       <div class="border-s border-gray-900/10 sm:border-l-transparent sm:p-6">
-        <a href="#">
-          <h3 class="font-bold uppercase text-bb-white">
-            {{ item?.name }} ({{ item?.year_published }})
-          </h3>
-        </a>
-
-        <!-- <p class="mt-2 line-clamp-3 text-sm/relaxed text-bb-white">
-          {{ item?.description }}
-        </p> -->
-
         <br />
         <div class="flow-root">
           <dl class="-my-3 text-sm divide-y divide-bb-black-light">
-            <div class="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+            <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
               <dt class="font-medium text-bb-white">Designer</dt>
               <dd class="text-bb-white sm:col-span-2">{{ item?.boardgame_designer }}</dd>
+            </div>
+
+            <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+              <dt class="font-medium text-bb-white">Publisher</dt>
+              <dd class="text-bb-white sm:col-span-2">{{ item?.boardgame_publisher }}</dd>
+            </div>
+
+            <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+              <dt class="font-medium text-bb-white">Category</dt>
+              <dd class="text-bb-white sm:col-span-2">{{ item?.boardgame_subdomain }}</dd>
+            </div>
+
+            <div class="grid grid-cols-1 gap-1 py-3 divide-bb-black-light sm:grid-cols-3 sm:gap-4">
+              <dt class="font-medium text-bb-white">Player Count</dt>
+              <dd class="text-bb-white sm:col-span-2">
+                {{ item?.min_players }}-{{ item?.max_players }} Players
+              </dd>
             </div>
 
             <div class="grid grid-cols-1 gap-1 py-3 divide-bb-black-light sm:grid-cols-3 sm:gap-4">
@@ -116,31 +171,44 @@ async function addItem() {
               </dd>
             </div>
 
-            <div class="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+            <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
               <dt class="font-medium text-bb-white">Age</dt>
               <dd class="text-bb-white sm:col-span-2">{{ item?.age }}+</dd>
             </div>
 
-            <div class="grid grid-cols-1 gap-1 py-3 divide-bb-black-light sm:grid-cols-3 sm:gap-4">
+            <!-- <div class="grid grid-cols-1 gap-1 py-3 divide-bb-black-light sm:grid-cols-3 sm:gap-4">
               <dt class="font-medium text-bb-white">Complexity rating</dt>
               <dd class="text-bb-white sm:col-span-2">Weight: 2.46 / 5</dd>
-            </div>
+            </div> -->
 
-            <div class="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-              <dt class="font-medium text-bb-white">Description</dt>
+            <div class="py-3">
+              <dt class="mb-4 font-medium text-bb-white">Description</dt>
               <dd v-html="item?.description" class="text-bb-white sm:col-span-2"></dd>
             </div>
           </dl>
         </div>
       </div>
 
-      <div class="mt-4 sm:flex sm:items-end sm:justify-end">
-        <button
-          @click.prevent.stop="showModal"
-          class="block px-5 py-3 text-xs font-bold text-center uppercase transition duration-300 rounded-lg text-bb-white bg-bb-red hover:bg-bb-orange active:bg-bb-maroon"
-        >
-          Add to collection
-        </button>
+      <div class="text-bb-white">
+        <p class="mb-4 font-medium">More Like This</p>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <RouterLink
+            v-for="rec in item?.recommendation"
+            :key="rec._source.id"
+            :to="{ name: 'product', params: { id: rec._source.id } }"
+            class="px-2 pt-2 pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-95 hover:scale-105"
+          >
+            <div class="flex flex-row h-[6rem] md:h-[16rem] lg:h-[10rem] mb-2">
+              <div class="w-full">
+                <img
+                  :src="rec._source.image"
+                  class="object-cover object-right-top w-full h-full transition duration-300 rounded-lg group-hover:opacity-100 opacity-80"
+                />
+              </div>
+            </div>
+            <p class="text-lg font-medium truncate">{{ rec._source.name }}</p>
+          </RouterLink>
+        </div>
       </div>
     </div>
   </article>

@@ -42,4 +42,21 @@ export default {
             public_id: public_id
         })
     },
+    randomPick(
+        collection_id: string,
+        min_age: number,
+        min_playtime: number,
+        max_playtime: number,
+        min_players: number,
+        max_players: number
+    ): Promise<AxiosResponse> {
+        return apiClient.post('/random_pick', {
+            collection_id: collection_id,
+            min_age: min_age,
+            min_playtime: min_playtime,
+            max_playtime: max_playtime,
+            min_players: min_players,
+            max_players: max_players
+        })
+    },
 }   

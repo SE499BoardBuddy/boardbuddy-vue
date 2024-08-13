@@ -16,6 +16,8 @@ import Menu from 'primevue/menu'
 import Button from 'primevue/button'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import { RouterLink } from 'vue-router'
+import type { Boardgame } from '@/type'
 
 const items = storeToRefs(userBGStore()).current_items
 
@@ -70,7 +72,7 @@ const toggle = (event: any) => {
 const confirm = useConfirm()
 const confirmDelete = () => {
   confirm.require({
-    group: 'headless',
+    group: 'confirmDelete',
     message: 'Do you want to delete this collection?',
     header: 'Delete ' + items.value?.name,
     icon: 'pi pi-info-circle',
@@ -95,10 +97,98 @@ const confirmDelete = () => {
     position: 'topleft'
   })
 }
+
+const randomGame = () => {
+  confirm.require({
+    group: 'randomGame',
+    message: '',
+    header: 'Random Game Picker',
+    icon: 'pi pi-info-circle',
+    rejectLabel: 'Cancel',
+    rejectProps: {
+      label: 'Cancel',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Confirm',
+      severity: 'danger'
+    },
+    accept: () => {
+      if (items.value != null) {
+        if (toggleRandomAge.value == false) {
+          randomAge.value = 0
+        }
+        if (toggleRandomPlaytime.value == false) {
+          randomMinPlaytime.value = 0
+          randomMaxPlaytime.value = 0
+        }
+        if (toggleRandomPlayers.value == false) {
+          randomMinPlayers.value = 0
+          randomMaxPlayers.value = 0
+        }
+
+        CollectionService.randomPick(
+          items.value?.public_id,
+          randomAge.value,
+          randomMinPlaytime.value,
+          randomMaxPlaytime.value,
+          randomMinPlayers.value,
+          randomMaxPlayers.value
+        ).then((response) => {
+          console.log(response.data)
+          if (response.data.length != 0) {
+            randomGamePicked.value = response.data[0]
+          } else {
+            randomGamePicked.value = {
+              isEmpty: true
+            }
+          }
+          gamePicked()
+        })
+      }
+    },
+    reject: () => {},
+    position: 'topleft'
+  })
+}
+
+const gamePicked = () => {
+  confirm.require({
+    group: 'gameShow',
+    message: '',
+    header: 'Game To Play Today!',
+    icon: 'pi pi-info-circle',
+    rejectLabel: 'Cancel',
+    rejectProps: {
+      label: 'Cancel',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Confirm',
+      severity: 'danger'
+    },
+    accept: () => {},
+    reject: () => {},
+    position: 'topleft'
+  })
+}
+
+const toggleRandomAge = ref(false)
+const toggleRandomPlaytime = ref(false)
+const toggleRandomPlayers = ref(false)
+const randomAge = ref(0)
+const randomMinPlaytime = ref(0)
+const randomMaxPlaytime = ref(0)
+const randomMinPlayers = ref(0)
+const randomMaxPlayers = ref(0)
+const randomGamePicked = ref()
 </script>
 <template>
   <headerVue></headerVue>
-  <ConfirmDialog group="headless">
+  <!-- delete confirmation -->
+  <ConfirmDialog group="confirmDelete">
     <template #container="{ message, acceptCallback, rejectCallback }">
       <ConfirmModalDialog
         @accept-callback="acceptCallback"
@@ -111,6 +201,141 @@ const confirmDelete = () => {
       </ConfirmModalDialog>
     </template>
   </ConfirmDialog>
+  <!-- random pick show -->
+  <ConfirmDialog group="gameShow">
+    <template #container="{ message, acceptCallback, rejectCallback }">
+      <ConfirmModalDialog
+        @accept-callback="acceptCallback"
+        @reject-callback="rejectCallback"
+        :header="message.header"
+      >
+        <template v-slot:content>
+          <RouterLink
+            v-if="!randomGamePicked.isEmpty"
+            :to="{ name: 'product', params: { id: randomGamePicked?.bg_id } }"
+            :key="randomGamePicked?.bg_id"
+            class="text-left transition duration-300 rounded-lg hover:bg-bb-black-light group"
+          >
+            <div class="flex flex-row h-[6rem] md:h-[16rem] lg:h-[10rem] mb-2">
+              <div class="w-full">
+                <img
+                  :src="randomGamePicked?.image"
+                  class="object-cover object-center w-full h-full transition duration-300 rounded-lg group-hover:opacity-100 opacity-80"
+                />
+              </div>
+            </div>
+            <p class="text-lg font-medium truncate">{{ randomGamePicked?.name }}</p>
+          </RouterLink>
+          <div v-else>No board games in this collection match your filters.</div>
+        </template>
+      </ConfirmModalDialog>
+    </template>
+  </ConfirmDialog>
+  <!-- random dialog -->
+  <ConfirmDialog group="randomGame">
+    <template #container="{ message, acceptCallback, rejectCallback }">
+      <ConfirmModalDialog
+        @accept-callback="acceptCallback"
+        @reject-callback="rejectCallback"
+        :header="message.header"
+      >
+        <template v-slot:content>
+          <div class="flex flex-col gap-2 p-2 text-base">
+            <span
+              >You can use the filters below to limit what can be randomized. Pressing "Confirm"
+              without any filters will randomly pick a board game from all of this collection.</span
+            >
+            <span class="text-base font-semibold">Filters</span>
+            <div class="flex flex-row" :class="toggleRandomAge ? 'opacity-100' : 'opacity-50'">
+              <label :for="'randomAge'" class="flex items-center w-1/2 gap-4 cursor-pointer">
+                <input
+                  class="box-content h-2 w-2 cursor-pointer ring-bb-white appearance-none rounded-full border-[5px] border-bb-black bg-bb-black bg-clip-padding outline-none ring-2 checked:ring-bb-red checked:bg-bb-red transition duration-75"
+                  type="checkbox"
+                  :id="'randomAge'"
+                  v-model="toggleRandomAge"
+                />
+                <div class="flex flex-col justify-center text-left text-bb-white">
+                  <span>Minimum Age</span>
+                </div>
+              </label>
+              <div class="flex flex-col w-1/2">
+                <input
+                  v-model="randomAge"
+                  :disabled="!toggleRandomAge"
+                  min="0"
+                  class="w-full px-2 border-2 rounded-lg bg-bb-black border-bb-white"
+                  type="number"
+                />
+              </div>
+            </div>
+
+            <div class="flex flex-row" :class="toggleRandomPlaytime ? 'opacity-100' : 'opacity-50'">
+              <label :for="'randomPlaytime'" class="flex items-center w-1/2 gap-4 cursor-pointer">
+                <input
+                  class="box-content h-2 w-2 cursor-pointer ring-bb-white appearance-none rounded-full border-[5px] border-bb-black bg-bb-black bg-clip-padding outline-none ring-2 checked:ring-bb-red checked:bg-bb-red transition duration-75"
+                  type="checkbox"
+                  :id="'randomPlaytime'"
+                  v-model="toggleRandomPlaytime"
+                />
+                <div class="flex flex-col justify-center text-left text-bb-white">
+                  <span>Play Time</span>
+                </div>
+              </label>
+              <div class="flex flex-row w-1/2 gap-1">
+                <input
+                  v-model="randomMinPlaytime"
+                  :disabled="!toggleRandomPlaytime"
+                  min="0"
+                  class="w-full px-2 border-2 rounded-lg bg-bb-black border-bb-white"
+                  type="number"
+                />
+                <span>to</span>
+                <input
+                  v-model="randomMaxPlaytime"
+                  :disabled="!toggleRandomPlaytime"
+                  min="0"
+                  class="w-full px-2 border-2 rounded-lg bg-bb-black border-bb-white"
+                  type="number"
+                />
+              </div>
+            </div>
+
+            <div class="flex flex-row" :class="toggleRandomPlayers ? 'opacity-100' : 'opacity-50'">
+              <label :for="'randomPlayers'" class="flex items-center w-1/2 gap-4 cursor-pointer">
+                <input
+                  class="box-content h-2 w-2 cursor-pointer ring-bb-white appearance-none rounded-full border-[5px] border-bb-black bg-bb-black bg-clip-padding outline-none ring-2 checked:ring-bb-red checked:bg-bb-red transition duration-75"
+                  type="checkbox"
+                  :id="'randomPlayers'"
+                  v-model="toggleRandomPlayers"
+                />
+                <div class="flex flex-col justify-center text-left text-bb-white">
+                  <span>Player Count</span>
+                </div>
+              </label>
+              <div class="flex flex-row w-1/2 gap-1">
+                <input
+                  v-model="randomMinPlayers"
+                  :disabled="!toggleRandomPlayers"
+                  min="0"
+                  class="w-full px-2 border-2 rounded-lg bg-bb-black border-bb-white"
+                  type="number"
+                />
+                <span>to</span>
+                <input
+                  v-model="randomMaxPlayers"
+                  :disabled="!toggleRandomPlayers"
+                  min="0"
+                  class="w-full px-2 border-2 rounded-lg bg-bb-black border-bb-white"
+                  type="number"
+                />
+              </div>
+            </div>
+          </div>
+        </template>
+      </ConfirmModalDialog>
+    </template>
+  </ConfirmDialog>
+
   <ContextMenu
     ref="target"
     :isMenuShown="isMenuShown"
@@ -163,6 +388,14 @@ const confirmDelete = () => {
     </div>
 
     <div class="w-full h-full mx-auto py-8 md:pb-16 px-2 lg:w-[90%]">
+      <div class="flex justify-center w-full mb-4" v-if="items?.items.length != 0">
+        <Button
+          @click="randomGame"
+          class="p-4 text-sm font-medium text-center transition duration-300 ease-in-out rounded-lg h-fit bg-bb-red end-0 hover:bg-bb-orange active:bg-bb-maroon"
+        >
+          What game should I play today?
+        </Button>
+      </div>
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
         <RouterLink
           @click.prevent.stop.right="showContextMenu($event, item.public_id)"
@@ -212,6 +445,41 @@ const confirmDelete = () => {
           </div>
         </RouterLink>
       </div>
+    </div>
+  </div>
+  <div
+    class="text-bb-white fixed top-0 right-0 h-full w-[16%] p-4 overflow-y-auto bg-bb-black border-l-2 pr-2 border-bb-black-light hidden lg:flex flex-col"
+  >
+    <p class="mb-4 text-lg font-medium">Recommendations</p>
+    <div class="grid grid-cols-1 gap-4" v-if="items?.recommendation.length != 0">
+      <RouterLink
+        v-for="rec in items?.recommendation"
+        :key="rec.bg_id"
+        :to="{ name: 'product', params: { id: rec.bg_id } }"
+        class="px-2 pt-2 pb-4 text-left transition duration-300 rounded-lg hover:bg-bb-black-light group active:scale-95 hover:scale-105"
+      >
+        <div class="flex flex-row h-[4rem] md:h-[14rem] lg:h-[8rem] mb-2">
+          <div class="w-full">
+            <img
+              :src="rec.image"
+              class="object-cover object-right-top w-full h-full transition duration-300 rounded-lg group-hover:opacity-100 opacity-80"
+            />
+          </div>
+        </div>
+        <p class="text-lg font-medium truncate">{{ rec.name }}</p>
+      </RouterLink>
+    </div>
+    <div class="flex flex-col justify-center px-2" v-else>
+      <span
+        >You can get some recommendations for this collection after adding some board games to
+        this!</span
+      >
+      <RouterLink
+        :to="{ name: 'browse' }"
+        class="px-4 py-2 mt-8 text-sm font-medium text-center transition duration-300 ease-in-out rounded-lg h-fit bg-bb-red end-0 hover:bg-bb-orange active:bg-bb-maroon"
+      >
+        Browse
+      </RouterLink>
     </div>
   </div>
   <navBarVue></navBarVue>
