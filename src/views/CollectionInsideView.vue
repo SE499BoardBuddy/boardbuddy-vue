@@ -2,7 +2,7 @@
 import navBarVue from '@/components/NavBar.vue'
 import headerVue from '@/components/HeaderBar.vue'
 import { storeToRefs } from 'pinia'
-import { userBGStore } from '@/stores/boardgame'
+import { useBGStore } from '@/stores/boardgame'
 import { ref } from 'vue'
 
 import ConfirmModalDialog from '@/components/ConfirmModalDialog.vue'
@@ -19,7 +19,7 @@ import { useConfirm } from 'primevue/useconfirm'
 import { RouterLink } from 'vue-router'
 import type { Boardgame } from '@/type'
 
-const items = storeToRefs(userBGStore()).current_items
+const items = storeToRefs(useBGStore()).current_items
 
 //Context Menu
 const isMenuShown = ref(false)

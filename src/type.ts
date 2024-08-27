@@ -82,3 +82,29 @@ export interface ResponseObjectIr {
         }[]
     }
 }
+
+export interface ChatHistoryInfo {
+    info: ChatHistory,
+    chats: ChatMessage[]
+}
+
+export interface ChatHistory {
+    game: number,
+    name: string,
+    public_id: string
+}
+
+export interface Rulebook {
+    id: number,
+    name: string,
+    image: string,
+    link: string
+}
+
+export interface ChatMessage {
+    date: string,
+    is_human: boolean,
+    message: string,
+    is_new: boolean,
+    history_id: string
+}

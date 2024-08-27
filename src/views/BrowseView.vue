@@ -3,14 +3,14 @@ import navBarVue from '@/components/NavBar.vue'
 import headerVue from '@/components/HeaderBar.vue'
 import { ref } from 'vue'
 import { onBeforeRouteUpdate, RouterLink, useRoute, useRouter } from 'vue-router'
-import { userBGStore } from '@/stores/boardgame'
+import { useBGStore } from '@/stores/boardgame'
 import IRService from '@/services/IRService'
 
 import PaginationCustom from '@/components/PaginationCustom.vue'
 import { storeToRefs } from 'pinia'
 
 const queryTerm = ref('')
-const bgStore = userBGStore()
+const bgStore = useBGStore()
 const totalItems = ref(1000)
 const searchedItems = storeToRefs(bgStore).current_search_results
 

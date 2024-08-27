@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import IRService from '@/services/IRService'
 import { useAuthStore } from '@/stores/auth'
-import { userBGStore } from '@/stores/boardgame'
+import { useBGStore } from '@/stores/boardgame'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()

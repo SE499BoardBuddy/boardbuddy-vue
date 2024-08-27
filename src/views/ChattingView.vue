@@ -1,15 +1,200 @@
 <script setup lang="ts">
 import headerVue from '@/components/HeaderBar.vue'
 import navBarVue from '@/components/NavBar.vue'
+import router from '@/router'
+import ChatService from '@/services/ChatService'
+import { useAuthStore } from '@/stores/auth'
+import { useChatStore } from '@/stores/chat'
+import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
-const isUploaded = ref(true)
+import { onBeforeRouteUpdate, RouterLink, useRoute } from 'vue-router'
+
+import ContextMenu from '@/components/ContextMenu.vue'
+import { onClickOutside } from '@vueuse/core'
+import type { Rulebook } from '@/type'
+
+const props = defineProps({
+  bg_id: {
+    type: String,
+    required: true
+  },
+  chat_id: {
+    type: String
+  }
+})
+
+const authStore = useAuthStore()
+const chatStore = useChatStore()
+
+const current_chat = storeToRefs(chatStore).current_history
+const all_chat = storeToRefs(chatStore).current_all_history
+
+const loadingChat = ref(false)
+const message = ref('')
+const route = useRoute()
+var collection_id = '-1'
+if (useRoute().name === 'chatting') {
+  const chat_id = route.params.chat_id
+  if (typeof chat_id === 'string') {
+    collection_id = chat_id
+  }
+}
+const rule = ref<Rulebook>()
+ChatService.getRulebooks().then((res) => {
+  res.data.forEach((r) => {
+    if (r.id === parseInt(props.bg_id)) {
+      rule.value = r
+    }
+  })
+})
+onBeforeRouteUpdate(async (to) => {
+  const bg_id_to = to.params.bg_id
+  if (typeof bg_id_to === 'string') {
+    ChatService.getRulebooks().then((res) => {
+      res.data.forEach((r) => {
+        if (r.id === parseInt(bg_id_to)) {
+          rule.value = r
+        }
+      })
+    })
+  }
+
+  const user_id = authStore.user?.public_id
+  const chat_id = to.params.chat_id
+  if (user_id && typeof chat_id === 'string') {
+    await ChatService.getAllChatHistory(user_id)
+      .then(async (response) => {
+        chatStore.setCurrentAllHistory(response.data)
+        await ChatService.getChatHistory(chat_id)
+          .then((res) => {
+            chatStore.setCurrentHistory(res.data)
+          })
+          .catch((err) => {
+            console.log(err)
+            if (err.response && err.response.status === 404) {
+              router.push({ name: 'home' })
+            }
+          })
+      })
+      .catch((error) => {
+        console.log(error)
+        if (error.response && error.response.status === 404) {
+          router.push({ name: 'home' })
+        }
+      })
+  }
+})
+
+async function sendMessage() {
+  if (authStore.user != null) {
+    const weekday = new Intl.DateTimeFormat('en-GB', {
+      weekday: 'short'
+    })
+    const date = new Intl.DateTimeFormat('en-GB', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+    const now = new Date()
+    const formattedDate =
+      weekday.format(now) + ', ' + date.format(now) + ' ' + now.toLocaleTimeString('en-GB')
+    current_chat.value.chats.push({
+      date: formattedDate,
+      is_human: true,
+      message: message.value,
+      is_new: false,
+      history_id: ''
+    })
+    loadingChat.value = true
+    await ChatService.sendMessage(
+      parseInt(props.bg_id),
+      collection_id,
+      authStore.user.public_id,
+      message.value
+    ).then((response) => {
+      if (response.data.is_new) {
+        router.replace({
+          name: 'chatting',
+          params: { chat_id: response.data.history_id, bg_id: parseInt(props.bg_id) }
+        })
+      }
+
+      current_chat.value.chats.push({
+        date: response.data.date,
+        is_human: false,
+        message: response.data.message,
+        is_new: false,
+        history_id: ''
+      })
+      console.log(response.data)
+      loadingChat.value = false
+      message.value = ''
+    })
+  }
+}
+
+//Context Menu
+const isMenuShown = ref(false)
+const menuX = ref(0)
+const menuY = ref(0)
+const targetRow = ref('')
+const contextMenuActions = ref([
+  { label: 'Delete', action: 'delete', icon: '/src/assets/trash.svg' }
+])
+const showContextMenu = (event: any, user: string) => {
+  event.preventDefault()
+  isMenuShown.value = true
+  targetRow.value = user
+  menuX.value = event.pageX
+  menuY.value = event.pageY
+  console.log(contextMenuActions.value)
+}
+
+function handleActionClick(action: any) {
+  if (action == 'delete') {
+    console.log('delete ' + targetRow.value)
+    ChatService.deleteHistory(targetRow.value).then(async () => {
+      if (collection_id === targetRow.value) {
+        router.replace({ name: 'home' })
+      } else {
+        const user_id = authStore.user?.public_id
+        if (user_id) {
+          await ChatService.getAllChatHistory(user_id)
+            .then(async (response) => {
+              chatStore.setCurrentAllHistory(response.data)
+            })
+            .catch((error) => {
+              console.log(error)
+              if (error.response && error.response.status === 404) {
+                router.push({ name: 'home' })
+              }
+            })
+        }
+      }
+    })
+  }
+}
+
+const target = ref(null)
+onClickOutside(target, () => {
+  isMenuShown.value = false
+})
+//End of Context Menu
 </script>
 <template>
+  <ContextMenu
+    ref="target"
+    :isMenuShown="isMenuShown"
+    :actions="contextMenuActions"
+    @action-clicked="handleActionClick"
+    :x="menuX - 201"
+    :y="menuY"
+  />
   <headerVue></headerVue>
   <div
     class="text-2xl font-semibold text-bb-white h-[12%] justify-between bg-bb-black fixed px-12 top-0 w-[68%] left-[16%] flex flex-row"
   >
-    <RouterLink :to="{ name: 'chat' }" class="w-[10%] flex justify-center my-auto p-2 lg:hidden">
+    <RouterLink :to="{ name: 'home' }" class="w-[10%] flex justify-center my-auto p-2 lg:hidden">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -22,11 +207,20 @@ const isUploaded = ref(true)
       </svg>
     </RouterLink>
     <p
-      class="my-auto text-2xl w-[80%] font-semibold leading-none text-left h-fit text-bb-white lg:w-auto"
+      class="my-auto text-2xl w-[90%] font-semibold leading-none text-left h-fit text-bb-white lg:w-auto"
     >
-      Chat with BoardBuddy
+      Chat with BoardBuddy<span v-if="rule !== undefined"> - </span
+      ><a
+        v-if="rule !== undefined"
+        class="underline transition duration-300 underline-offset-4 text-bb-red hover:text-bb-orange active:text-bb-maroon"
+        :href="rule?.link"
+        target="_blank"
+      >
+        {{ rule.name }}
+      </a>
     </p>
-    <button
+    <!-- <RouterLink
+      :to="{ name: 'chat', params: { bg_id: props.bg_id } }"
       class="flex flex-col justify-center h-[60%] group px-2 rounded-lg my-auto transition duration-300 active:scale-95 hover:bg-bb-black-light active:bg-bb-black"
     >
       <div class="flex flex-row">
@@ -46,131 +240,71 @@ const isUploaded = ref(true)
           New Chat
         </p>
       </div>
-    </button>
+    </RouterLink> -->
   </div>
   <div
     class="min-w-screen min-h-screen bg-bb-black pt-[8vh] lg:pt-[10vh] lg:pb-[15vh] lg:px-[16%] text-bb-white overflow-hidden"
   >
     <div class="py-4 lg:w-[90%] lg:mx-auto">
       <div class="text-sm h-[75%] overflow-x-hidden overflow-y-auto pt-4">
-        <div
-          v-if="!isUploaded"
-          class="flex items-center justify-center w-full lg:max-w-[75%] lg:mx-auto"
-        >
-          <label
-            for="dropzone-file"
-            class="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer text-bb-white border-bb-white bg-bb-black-light hover:bg-bb-maroon"
+        <ul v-if="current_chat != null" class="lg:px-8">
+          <div
+            v-for="chat in current_chat.chats"
+            :key="chat.date"
+            class="w-full whitespace-pre-line"
           >
-            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-8 h-8"
+            <li v-if="chat.is_human" class="flex flex-col mb-8">
+              <div
+                class="p-4 mb-2 rounded-tl-lg rounded-bl-lg rounded-br-lg bg-bb-maroon lg:max-w-[80%] lg:ml-auto"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
-                />
-              </svg>
-
-              <p class="px-6 mt-4 mb-2 text-sm leading-relaxed text-center text-bb-white">
-                <span class="font-semibold">Click to upload</span> or drag and drop your rulebook
-                pdf here!
-              </p>
-            </div>
-            <input id="dropzone-file" type="file" class="hidden" />
-          </label>
-        </div>
-        <ul v-else class="lg:px-8">
-          <li class="flex flex-col mb-8 justify-left">
+                <span v-html="chat.message"></span>
+              </div>
+              <div class="text-xs text-right">{{ chat.date }}</div>
+            </li>
+            <li v-else class="flex flex-col mb-8 justify-left">
+              <div class="flex flex-row mb-2">
+                <div class="w-8 h-8 rounded-full bg-slate-600"></div>
+                <div class="ml-2 font-semibold leading-loose align-middle">BoardBuddy</div>
+              </div>
+              <div
+                class="p-4 mb-2 rounded-tr-lg rounded-bl-lg rounded-br-lg bg-bb-black-light lg:max-w-[80%]"
+              >
+                <span v-html="chat.message"></span>
+              </div>
+              <div class="text-xs">{{ chat.date }}</div>
+            </li>
+          </div>
+          <li v-if="loadingChat" class="flex flex-col mb-8 justify-left animate-pulse">
             <div class="flex flex-row mb-2">
               <div class="w-8 h-8 rounded-full bg-slate-600"></div>
               <div class="ml-2 font-semibold leading-loose align-middle">BoardBuddy</div>
             </div>
             <div
-              class="p-4 mb-2 rounded-tr-lg rounded-bl-lg rounded-br-lg bg-bb-black-light lg:w-[80%]"
+              class="p-4 mb-2 rounded-tr-lg rounded-bl-lg rounded-br-lg bg-bb-black-light lg:max-w-[80%]"
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-              lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-              lacinia ac. Suspendisse cursus eget sapien in varius.
+              <div class="w-full h-2 rounded-full"></div>
             </div>
-            <div class="text-xs">00.00 6/5/2567</div>
-          </li>
-          <li class="flex flex-col mb-8">
-            <div
-              class="p-4 mb-2 rounded-tl-lg rounded-bl-lg rounded-br-lg bg-bb-maroon lg:w-[80%] lg:ml-auto"
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-              lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-              lacinia ac. Suspendisse cursus eget sapien in varius.
-            </div>
-            <div class="text-xs text-right">00.00 6/5/2567</div>
-          </li>
-          <li class="flex flex-col mb-8 justify-left">
-            <div class="flex flex-row mb-2">
-              <div class="w-8 h-8 rounded-full bg-slate-600"></div>
-              <div class="ml-2 font-semibold leading-loose align-middle">BoardBuddy</div>
-            </div>
-            <div
-              class="p-4 mb-2 rounded-tr-lg rounded-bl-lg rounded-br-lg bg-bb-black-light lg:w-[80%]"
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-              lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-              lacinia ac. Suspendisse cursus eget sapien in varius.
-            </div>
-            <div class="text-xs">00.00 6/5/2567</div>
-          </li>
-          <li class="flex flex-col mb-8">
-            <div
-              class="p-4 mb-2 rounded-tl-lg rounded-bl-lg rounded-br-lg bg-bb-maroon lg:w-[80%] lg:ml-auto"
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-              lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-              lacinia ac. Suspendisse cursus eget sapien in varius.
-            </div>
-            <div class="text-xs text-right">00.00 6/5/2567</div>
-          </li>
-          <li class="flex flex-col mb-8 justify-left">
-            <div class="flex flex-row mb-2">
-              <div class="w-8 h-8 rounded-full bg-slate-600"></div>
-              <div class="ml-2 font-semibold leading-loose align-middle">BoardBuddy</div>
-            </div>
-            <div
-              class="p-4 mb-2 rounded-tr-lg rounded-bl-lg rounded-br-lg bg-bb-black-light lg:w-[80%]"
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-              lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-              lacinia ac. Suspendisse cursus eget sapien in varius.
-            </div>
-            <div class="text-xs">00.00 6/5/2567</div>
-          </li>
-          <li class="flex flex-col mb-8">
-            <div
-              class="p-4 mb-2 rounded-tl-lg rounded-bl-lg rounded-br-lg bg-bb-maroon lg:w-[80%] lg:ml-auto"
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-              lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-              lacinia ac. Suspendisse cursus eget sapien in varius.
-            </div>
-            <div class="text-xs text-right">00.00 6/5/2567</div>
+            <div class="w-1/6 h-4 rounded-full bg-bb-black-light"></div>
           </li>
         </ul>
       </div>
     </div>
   </div>
-  <div class="flex p-4 h-[15%] w-[68%] left-[16%] bg-bb-black fixed bottom-0 text-bb-white">
+  <form
+    @submit.prevent="sendMessage"
+    class="flex p-4 h-[15%] w-[68%] left-[16%] bg-bb-black fixed bottom-0 text-bb-white"
+  >
     <textarea
+      v-model="message"
+      required
       rows="2"
       type="text"
       placeholder="Type a message"
       class="w-full px-3 py-2 border rounded-l-lg resize-none border-bb-black focus:outline-none focus:ring-2 focus:ring-bb-red bg-bb-black-light"
     />
     <button
-      class="w-auto h-auto p-4 transition duration-300 rounded-r-lg bg-bb-red hover:bg-bb-orange active:bg-bb-maroon"
+      type="submit"
+      class="w-auto h-auto p-4 transition duration-300 border rounded-r-lg border-bb-red ring-bb-red ring-2 bg-bb-red hover:bg-bb-orange hover:ring-bb-orange hover:border-bb-orange active:bg-bb-maroon"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +321,7 @@ const isUploaded = ref(true)
         />
       </svg>
     </button>
-  </div>
+  </form>
   <div
     class="fixed top-0 right-0 h-full w-[16%] bg-bb-black border-l-2 pr-2 border-bb-black-light text-bb-white flex flex-col"
   >
@@ -195,18 +329,21 @@ const isUploaded = ref(true)
       All Chats
     </div>
     <div class="flex flex-col">
-      <div class="py-2 pl-4 font-medium">7/5/2567</div>
-      <a
+      <RouterLink
+        :to="{ name: 'chatting', params: { chat_id: history.public_id, bg_id: history.game } }"
+        v-for="history in all_chat"
+        :key="history.public_id"
         href=""
         class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
       >
-        <div class="flex flex-row">
+        <div class="flex flex-row justify-between">
           <div class="truncate">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-            lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-            lacinia ac. Suspendisse cursus eget sapien in varius.
+            {{ history.name }}
           </div>
-          <div class="p-1 rounded hover:bg-bb-black">
+          <button
+            @click.prevent.stop="showContextMenu($event, history.public_id)"
+            class="p-1 rounded hover:bg-bb-black"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -221,153 +358,11 @@ const isUploaded = ref(true)
                 d="M3.75 9h16.5m-16.5 6.75h16.5"
               />
             </svg>
-          </div>
+          </button>
         </div>
-      </a>
-      <a
-        href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
-      >
-        <div class="flex flex-row">
-          <div class="truncate">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-            lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-            lacinia ac. Suspendisse cursus eget sapien in varius.
-          </div>
-          <div class="p-1 rounded hover:bg-bb-black">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-4 h-4"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3.75 9h16.5m-16.5 6.75h16.5"
-              />
-            </svg>
-          </div>
-        </div>
-      </a>
-      <a
-        href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
-      >
-        <div class="flex flex-row">
-          <div class="truncate">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-            lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-            lacinia ac. Suspendisse cursus eget sapien in varius.
-          </div>
-          <div class="p-1 rounded hover:bg-bb-black">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-4 h-4"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3.75 9h16.5m-16.5 6.75h16.5"
-              />
-            </svg>
-          </div>
-        </div>
-      </a>
-    </div>
-    <div class="flex flex-col">
-      <div class="py-2 pl-4 font-medium">7/5/2567</div>
-      <a
-        href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
-      >
-        <div class="flex flex-row">
-          <div class="truncate">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-            lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-            lacinia ac. Suspendisse cursus eget sapien in varius.
-          </div>
-          <div class="p-1 rounded hover:bg-bb-black">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-4 h-4"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3.75 9h16.5m-16.5 6.75h16.5"
-              />
-            </svg>
-          </div>
-        </div>
-      </a>
-      <a
-        href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
-      >
-        <div class="flex flex-row">
-          <div class="truncate">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-            lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-            lacinia ac. Suspendisse cursus eget sapien in varius.
-          </div>
-          <div class="p-1 rounded hover:bg-bb-black">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-4 h-4"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3.75 9h16.5m-16.5 6.75h16.5"
-              />
-            </svg>
-          </div>
-        </div>
-      </a>
-      <a
-        href=""
-        class="flex flex-col justify-center h-12 px-4 text-sm transition duration-300 border-l-4 rounded-tr-lg rounded-br-lg active:scale-95 group hover:bg-bb-black-light hover:border-bb-red border-bb-black"
-      >
-        <div class="flex flex-row">
-          <div class="truncate">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras odio elit, semper eget
-            lacinia vitae, bibendum eu urna. Proin venenatis lobortis diam, vitae mollis libero
-            lacinia ac. Suspendisse cursus eget sapien in varius.
-          </div>
-          <div class="p-1 rounded hover:bg-bb-black">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-4 h-4"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3.75 9h16.5m-16.5 6.75h16.5"
-              />
-            </svg>
-          </div>
-        </div>
-      </a>
+      </RouterLink>
     </div>
   </div>
   <navBarVue class="hidden lg:block"></navBarVue>
+  <div id="bottom"></div>
 </template>

@@ -12,11 +12,13 @@ import AdminView from '@/views/AdminView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import IRService from '@/services/IRService'
-import { userBGStore } from '@/stores/boardgame'
+import { useBGStore } from '@/stores/boardgame'
 import CollectionService from '@/services/CollectionService'
 import { useAuthStore } from '@/stores/auth'
 
 import NProgress from 'nprogress'
+import { useChatStore } from '@/stores/chat'
+import ChatService from '@/services/ChatService'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,6 +30,37 @@ const router = createRouter({
       meta: {
         requiresAuth: false
       },
+      beforeEnter: async (to) => {
+        const authStore = useAuthStore()
+        const chatStore = useChatStore()
+        await ChatService.getRulebooks()
+          .then((response) => {
+            chatStore.setRulebook(response.data)
+          })
+        chatStore.setCurrentHistory({
+          info: {
+            game: 0,
+            name: '',
+            public_id: ''
+          },
+          chats: []
+        })
+        const user_id = authStore.user?.public_id
+        if (user_id && isLoggedIn()) {
+          NProgress.set(0.7)
+          await ChatService.getAllChatHistory(user_id)
+            .then((response) => {
+              chatStore.setCurrentAllHistory(response.data)
+            })
+            .catch((error) => {
+              console.log(error)
+              if (error.response && error.response.status === 404) {
+                router.push({ 'name': 'home' })
+              }
+            })
+
+        }
+      }
     },
     {
       path: '/search',
@@ -50,7 +83,7 @@ const router = createRouter({
         // console.log('query', query)
         // console.log('page', page)
 
-        const bgStore = userBGStore()
+        const bgStore = useBGStore()
         NProgress.set(0.7)
         await IRService.search(query, parseInt(page), 0, 0, 0, 0, 0, 0, 0, '', '', '').then((response) => {
           bgStore.setCurrentResponse(response.data)
@@ -59,20 +92,70 @@ const router = createRouter({
       }
     },
     {
-      path: '/chat',
+      path: '/chat/:bg_id/',
       name: 'chat',
-      component: ChatView,
+      component: ChattingView,
       meta: {
-        requiresAuth: false
+        requiresAuth: true
       },
+      props: true,
+      beforeEnter: async (to) => {
+        const authStore = useAuthStore()
+        const chatStore = useChatStore()
+        const user_id = authStore.user?.public_id
+        if (user_id && isLoggedIn()) {
+          NProgress.set(0.7)
+          await ChatService.getAllChatHistory(user_id)
+            .then((response) => {
+              chatStore.setCurrentAllHistory(response.data)
+            })
+            .catch((error) => {
+              console.log(error)
+              if (error.response && error.response.status === 404) {
+                router.push({ 'name': 'home' })
+              }
+            })
+        }
+      }
     },
     {
-      path: '/chatting',
+      path: '/chat/:bg_id/:chat_id',
       name: 'chatting',
       component: ChattingView,
       meta: {
-        requiresAuth: false
+        requiresAuth: true
       },
+      props: true,
+      beforeEnter: async (to) => {
+        const chat_id: string = to.params.chat_id as string
+        const authStore = useAuthStore()
+        const chatStore = useChatStore()
+        const user_id = authStore.user?.public_id
+        if (user_id && isLoggedIn()) {
+          NProgress.set(0.7)
+          await ChatService.getAllChatHistory(user_id)
+            .then(async (response) => {
+              chatStore.setCurrentAllHistory(response.data)
+              await ChatService.getChatHistory(chat_id)
+                .then((res) => {
+                  chatStore.setCurrentHistory(res.data)
+                  // console.log(chatStore.current_history)
+                })
+                .catch((error) => {
+                  console.log(error)
+                  if (error.response && error.response.status === 404) {
+                    router.push({ 'name': 'home' })
+                  }
+                })
+            })
+            .catch((error) => {
+              console.log(error)
+              if (error.response && error.response.status === 404) {
+                router.push({ 'name': 'home' })
+              }
+            })
+        }
+      }
     },
     {
       path: '/collection',
@@ -83,7 +166,7 @@ const router = createRouter({
       },
       beforeEnter: async (to) => {
         const authStore = useAuthStore()
-        const bgStore = userBGStore()
+        const bgStore = useBGStore()
         if (isLoggedIn() && authStore.user != null) {
           console.log(authStore.user.public_id)
           NProgress.set(0.7)
@@ -104,7 +187,7 @@ const router = createRouter({
       beforeEnter: async (to) => {
         const collection_id: string = to.params.collection_id as string
         const authStore = useAuthStore()
-        const bgStore = userBGStore()
+        const bgStore = useBGStore()
         const user_id = authStore.user?.public_id
         if (user_id && isLoggedIn()) {
           NProgress.set(0.7)
@@ -159,7 +242,7 @@ const router = createRouter({
       component: ProductView,
       beforeEnter: async (to) => {
         const id: string = to.params.id as string
-        const bgStore = userBGStore()
+        const bgStore = useBGStore()
         NProgress.set(0.5)
         await CollectionService.getBoardgame(id)
           .then((response) => {
@@ -192,7 +275,12 @@ const router = createRouter({
     },
   ],
   scrollBehavior(to, from, savedPosition) {
-    return { top: 0 }
+    console.log(to.name)
+    if (to.name != 'chatting') {
+      return { top: 0, behavior: 'smooth', }
+    } else {
+      return { el: '#bottom', top: 0, behavior: 'smooth', }
+    }
   }
 })
 

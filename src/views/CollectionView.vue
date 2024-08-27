@@ -4,7 +4,7 @@ import headerVue from '@/components/HeaderBar.vue'
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
-import { userBGStore } from '@/stores/boardgame'
+import { useBGStore } from '@/stores/boardgame'
 import CollectionService from '@/services/CollectionService'
 import router from '@/router'
 
@@ -17,7 +17,7 @@ const isModalShown = ref(false)
 const collectionName = ref('')
 
 const authStore = useAuthStore()
-const bgStore = userBGStore()
+const bgStore = useBGStore()
 const user = storeToRefs(authStore).user
 const collections = storeToRefs(bgStore).current_collections
 function createCollection() {

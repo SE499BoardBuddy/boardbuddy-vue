@@ -82,7 +82,7 @@ for (var i = 1; i <= 30; i++) {
       </ul>
       <div class="h-[20%] flex items-center" v-if="chatList.length != 0">
         <RouterLink
-          :to="{ name: 'chatting' }"
+          :to="{ name: 'home' }"
           class="p-4 mx-auto rounded-lg h-fit bg-bb-red w-[80%] font-medium text-center lg:w-[60%]"
         >
           New Chat!

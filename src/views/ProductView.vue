@@ -3,7 +3,7 @@ import navBarVue from '@/components/NavBar.vue'
 import headerVue from '@/components/HeaderBar.vue'
 import ModalPopup from '@/components/ModalPopup.vue'
 
-import { userBGStore } from '@/stores/boardgame'
+import { useBGStore } from '@/stores/boardgame'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import type { UserCollection } from '@/type'
@@ -14,7 +14,7 @@ import CollectionService from '@/services/CollectionService'
 import NProgress from 'nprogress'
 import { onBeforeRouteUpdate } from 'vue-router'
 
-const bgStore = userBGStore()
+const bgStore = useBGStore()
 const authStore = useAuthStore()
 
 const item = storeToRefs(bgStore).current_boardgame

@@ -1,6 +1,6 @@
 import type { Boardgame, UserCollection, Collection, ResponseObjectIr } from '@/type'
 import { defineStore } from 'pinia'
-export const userBGStore = defineStore('boardgame', {
+export const useBGStore = defineStore('boardgame', {
     state: () => ({
         current_boardgame: null as Boardgame | null,
         res: null as ResponseObjectIr | null,
