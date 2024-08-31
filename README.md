@@ -1,6 +1,6 @@
 # boardbuddyvue
 
-This is the front-end.
+This is the front-end.\
 Back-end: https://github.com/SE499BoardBuddy/boardbuddy-flask
 
 ## Recommended IDE Setup
