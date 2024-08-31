@@ -1,5 +1,4 @@
-# boardbuddyvue
-
+# BoardBuddy
 This is the front-end.\
 Back-end: https://github.com/SE499BoardBuddy/boardbuddy-flask
 
