@@ -400,4 +400,5 @@ onBeforeRouteUpdate(() => {
     </form>
   </div>
   <navBarVue></navBarVue>
+  <div id="bottom"></div>
 </template>

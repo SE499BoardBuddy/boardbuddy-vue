@@ -192,7 +192,8 @@ onClickOutside(target, () => {
   />
   <headerVue></headerVue>
   <div
-    class="text-2xl font-semibold text-bb-white h-[12%] justify-between bg-bb-black fixed px-12 top-0 w-[68%] left-[16%] flex flex-row"
+    @click="console.log('test')"
+    class="text-md lg:text-2xl font-semibold text-bb-white h-[6%] lg:h-[12%] justify-between bg-bb-black fixed px-8 lg:px-12 top-[8vh] lg:top-0 w-full lg:w-[68%] lg:left-[16%] flex flex-row"
   >
     <RouterLink :to="{ name: 'home' }" class="w-[10%] flex justify-center my-auto p-2 lg:hidden">
       <svg
@@ -207,7 +208,7 @@ onClickOutside(target, () => {
       </svg>
     </RouterLink>
     <p
-      class="my-auto text-2xl w-[90%] font-semibold leading-none text-left h-fit text-bb-white lg:w-auto"
+      class="w-[90%] my-auto font-semibold leading-none text-center lg:text-left h-fit text-bb-white lg:w-auto"
     >
       Chat with BoardBuddy<span v-if="rule !== undefined"> - </span
       ><a
@@ -243,10 +244,10 @@ onClickOutside(target, () => {
     </RouterLink> -->
   </div>
   <div
-    class="min-w-screen min-h-screen bg-bb-black pt-[8vh] lg:pt-[10vh] lg:pb-[15vh] lg:px-[16%] text-bb-white overflow-hidden"
+    class="min-w-screen min-h-screen bg-bb-black pt-[14vh] lg:pt-[10vh] lg:pb-[15vh] lg:px-[16%] text-bb-white overflow-hidden"
   >
-    <div class="py-4 lg:w-[90%] lg:mx-auto">
-      <div class="text-sm h-[75%] overflow-x-hidden overflow-y-auto pt-4">
+    <div class="lg:py-4 lg:w-[90%] lg:mx-auto">
+      <div class="text-sm h-[75%] overflow-x-hidden overflow-y-auto px-8 pt-4 py-20">
         <ul v-if="current_chat != null" class="lg:px-8">
           <div
             v-for="chat in current_chat.chats"
@@ -255,7 +256,7 @@ onClickOutside(target, () => {
           >
             <li v-if="chat.is_human" class="flex flex-col mb-8">
               <div
-                class="p-4 mb-2 rounded-tl-lg rounded-bl-lg rounded-br-lg bg-bb-maroon lg:max-w-[80%] lg:ml-auto"
+                class="p-4 mb-2 rounded-tl-lg rounded-bl-lg rounded-br-lg text-right bg-bb-maroon max-w-[80%] ml-auto"
               >
                 <span v-html="chat.message"></span>
               </div>
@@ -267,7 +268,7 @@ onClickOutside(target, () => {
                 <div class="ml-2 font-semibold leading-loose align-middle">BoardBuddy</div>
               </div>
               <div
-                class="p-4 mb-2 rounded-tr-lg rounded-bl-lg rounded-br-lg bg-bb-black-light lg:max-w-[80%]"
+                class="p-4 mb-2 rounded-tr-lg rounded-bl-lg rounded-br-lg text-left bg-bb-black-light max-w-[80%]"
               >
                 <span v-html="chat.message"></span>
               </div>
@@ -292,7 +293,7 @@ onClickOutside(target, () => {
   </div>
   <form
     @submit.prevent="sendMessage"
-    class="flex p-4 h-[15%] w-[68%] left-[16%] bg-bb-black fixed bottom-0 text-bb-white"
+    class="flex p-4 h-[12%] lg:h-[15%] w-full lg:w-[68%] left-0 lg:left-[16%] bg-bb-black fixed bottom-0 text-bb-white shadow-[0_-10px_25px_20px_rgba(39,9,44,0.5)]"
   >
     <textarea
       v-model="message"
@@ -312,7 +313,7 @@ onClickOutside(target, () => {
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
-        class="w-6 h-6"
+        class="w-4 h-4 lg:w-6 lg:h-6"
       >
         <path
           stroke-linecap="round"
@@ -323,7 +324,7 @@ onClickOutside(target, () => {
     </button>
   </form>
   <div
-    class="fixed top-0 right-0 h-full w-[16%] bg-bb-black border-l-2 pr-2 border-bb-black-light text-bb-white flex flex-col"
+    class="fixed hidden top-0 right-0 h-full w-[16%] bg-bb-black border-l-2 pr-2 border-bb-black-light text-bb-white lg:flex flex-col"
   >
     <div class="w-full pl-4 h-[12%] text-lg font-medium flex flex-col justify-center">
       All Chats
