@@ -1,6 +1,6 @@
-# boardbuddyvue
-
-This template should help get you started developing with Vue 3 in Vite.
+# BoardBuddy
+This is the front-end.\
+Back-end: https://github.com/SE499BoardBuddy/boardbuddy-flask
 
 ## Recommended IDE Setup
 
